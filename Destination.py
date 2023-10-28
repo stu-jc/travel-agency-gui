@@ -8,3 +8,4 @@ class Destination:
 
     def get_country(self):
         return self.country
+

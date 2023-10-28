@@ -912,41 +912,50 @@ class ViewTrip:
         frame2 = ttk.Frame(self.view_trip)
         frame2.pack(side=TOP, fill=BOTH, expand=True)
         ttk.Label(frame2, text='Your Trip', foreground='blue', width=20, font=('Arial', 16, 'bold')).pack()
-        self.frame3 = ttk.Frame(self.view_trip)
-        self.frame3.pack()
-        self.treeview = ttk.Treeview(self.frame3, show='headings')
+        frame3 = ttk.Frame(self.view_trip)
+        frame3.pack(side=TOP, fill=BOTH, expand=True)
+        self.treeview = ttk.Treeview(frame3)
         self.treeview.pack(fill=BOTH, expand=True)
-        self.treeview.insert('', 0, 'item1', text='First Item')
 
         frame4 = ttk.Frame(self.view_trip)
         frame4.pack(side=BOTTOM, fill=X, expand=True)
         ttk.Button(frame4, text='Close', command=self.view_trip.destroy).pack(side=tk.RIGHT, fill=X, expand=True)
-        self.view_ind_btn = ttk.Button(frame4, text='View Individual')
+        self.view_ind_btn = ttk.Button(frame4, text='View Individual', command=self.view_individual)
         self.view_ind_btn.pack(side=tk.LEFT, fill=X, expand=True)
-        self.treeview.insert('', 0, 'item1', text='First Item')
-        self.treeview.insert('', 1, 'item2', text='Second Item')
-        self.set_treeview()
+        self.view_ind_btn.config(state=DISABLED)
 
-        # self.view_ind_btn.config(state=DISABLED)
-    #     self.name_tf.bind('<KeyRelease>', lambda e: self.set_btn())
-    #     self.country_tf.bind('<KeyRelease>', lambda e: self.set_btn())
-    #
-    # def set_btn(self): d
-    #     if len(self.name_tf.get()) != 0 and len(self.country_tf.get()) != 0:
-    #         self.add_d_btn.config(state=NORMAL)
-    #     else:
-    #         self.add_d_btn.config(state=DISABLED)
+        self.set_treeview()
+        self.treeview.bind("<<TreeviewSelect>>", lambda e: self.view_ind_btn.config(state=NORMAL))
 
     def set_treeview(self):
         lst = self.vt_ctrl.view_trip()
-        for i in lst:
-            x = self.vt_ctrl.desti_or_flight(i)
-            if x is True:
-                print(i.name, 'to', i.country)
-                self.treeview.insert('','end', text=i.name + 'to' + i.country)
-            else:
-                print(i.airline, i.flight_no, 'from', i.takeoff, 'to', i.landing, 'for', i.cost)
-                self.treeview.insert('', 'end', text=i.airline + str(i.flight_no) + 'from' + i.takeoff + 'to' + i.landing + 'for' + str(i.cost))
+        if len(lst) == 0:
+            self.treeview.heading("#0", text='Nothing yet')
+        else:
+            self.treeview['show'] = 'tree'
+            for i in lst:
+                x = self.vt_ctrl.desti_or_flight(i)
+                if x is True:
+                    self.treeview.insert('', 'end', text=i.name + ' in ' + i.country, values=i.__class__)
+                else:
+                    self.treeview.insert('', 'end', text=i.airline + ' ' + str(i.flight_no) +
+                                                         ' from ' + i.takeoff + ' to ' + i.landing + ' for ' + str(i.cost), values=i.__class__)
+
+    def view_individual(self):
+        selected_obj = self.treeview.item(self.treeview.focus(), "values")
+        print(selected_obj[1])
+        if selected_obj[1] == "'Destination.Destination'>":
+            print('its a desti')
+            # ViewAllDestinations(self.vt_ctrl)
+        elif selected_obj[1] == "'Flight.Flight'>":
+            print('its a flight')
+            # ViewAllFlights(self.vt_ctrl)
+        else:
+            print('its nun')
+            #this doesn't work, figure out a way to check if multiple things have been selected and
+            # throw error window from therrrE
+            # ONDEROOS!
+
 
 
 
