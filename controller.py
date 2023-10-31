@@ -30,7 +30,7 @@ class Controller:
         self.model.add_destination(name, country)
 
     def remove_destination(self, name, country):
-        self.model.remove_trip_d(name, country)
+        self.model.remove_destination(name, country)
 
 #trips
 

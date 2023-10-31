@@ -57,7 +57,7 @@ class Model:
         name = str(name)
         country = str(country)
         destination_obj = Destination(name, country)
-        self.agency.destinations.remove_trip_d(destination_obj)
+        self.agency.destinations.remove_destination(destination_obj)
 
     def add_trip_destination(self, name, country):
         name = str(name)

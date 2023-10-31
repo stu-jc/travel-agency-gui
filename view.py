@@ -154,36 +154,14 @@ class ViewAllFlights:
         self.inner_frame.pack()
         canvas.create_window((0, 0), window=self.inner_frame, anchor='nw')
 
-        self.airline_header = ttk.Entry(self.inner_frame)
-        self.airline_header.grid(row=0, column=0)
-        self.airline_header.insert(END, 'Airline')
-        self.airline_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-
-        self.flight_no_header = ttk.Entry(self.inner_frame)
-        self.flight_no_header.grid(row=0, column=1)
-        self.flight_no_header.insert(END, 'Flight Number')
-        self.flight_no_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-
-        self.takeoff_header = ttk.Entry(self.inner_frame)
-        self.takeoff_header.grid(row=0, column=2)
-        self.takeoff_header.insert(END, 'Takeoff Country')
-        self.takeoff_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-
-        self.landing_header = ttk.Entry(self.inner_frame)
-        self.landing_header.grid(row=0, column=3)
-        self.landing_header.insert(END, 'Landing Country')
-        self.landing_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-
-        self.cost_header = ttk.Entry(self.inner_frame)
-        self.cost_header.grid(row=0, column=4)
-        self.cost_header.insert(END, 'Cost')
-        self.cost_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-
-        self.airline_entry = ttk.Entry(self.inner_frame)
-        self.flight_no_entry = ttk.Entry(self.inner_frame)
-        self.takeoff_entry = ttk.Entry(self.inner_frame)
-        self.landing_entry = ttk.Entry(self.inner_frame)
-        self.cost_entry = ttk.Entry(self.inner_frame)
+        columns = ('Airline', 'FN', 'Takeoff', 'Landing', 'Cost')
+        self.treeview = ttk.Treeview(self.inner_frame, columns=columns, show="headings")
+        self.treeview.pack()
+        self.treeview.heading(column=0, text='Airline')
+        self.treeview.heading(column=1, text='Flight Number')
+        self.treeview.heading(column=2, text='Takeoff')
+        self.treeview.heading(column=3, text='Landing')
+        self.treeview.heading(column=4, text='Cost')
 
         frame4 = ttk.Frame(self.view_all_flights)
         frame4.pack(side=BOTTOM, fill=X, expand=True)
@@ -195,42 +173,20 @@ class ViewAllFlights:
         canvas.config(scrollregion=canvas.bbox("all"))
         canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
+    def clear_treeview(self):
+        for item in self.treeview.get_children():
+            self.treeview.delete(item)
+
     def fill_table(self):
+        self.clear_treeview()
         lst = self.vaf_controller.model.agency.flights.flights
-
-        self.airline_entry.destroy()
-        self.flight_no_entry.destroy()
-        self.takeoff_entry.destroy()
-        self.landing_entry.destroy()
-        self.cost_entry.destroy()
-
-        i = 1
+        data = []
         for f in lst:
-            self.airline_entry = ttk.Entry(self.inner_frame)
-            self.airline_entry.grid(row=i, column=0,)
-            self.airline_entry.insert(END, f.airline)
-            self.airline_entry.config(state=DISABLED, foreground='light blue')
+            flight = (f.airline, f.flight_no, f.takeoff, f.landing, f.cost)
+            data.append(flight)
 
-            self.flight_no_entry = ttk.Entry(self.inner_frame)
-            self.flight_no_entry.grid(row=i, column=1)
-            self.flight_no_entry.insert(END, f.flight_no)
-            self.flight_no_entry.config(state=DISABLED, foreground='light blue')
-
-            self.takeoff_entry = ttk.Entry(self.inner_frame)
-            self.takeoff_entry.grid(row=i, column=2)
-            self.takeoff_entry.insert(END, f.takeoff)
-            self.takeoff_entry.config(state=DISABLED, foreground='light blue')
-
-            self.landing_entry = ttk.Entry(self.inner_frame)
-            self.landing_entry.grid(row=i, column=3)
-            self.landing_entry.insert(END, f.landing)
-            self.landing_entry.config(state=DISABLED, foreground='light blue')
-
-            self.cost_entry = ttk.Entry(self.inner_frame)
-            self.cost_entry.grid(row=i, column=4)
-            self.cost_entry.insert(END, f.cost)
-            self.cost_entry.config(state=DISABLED, foreground='light blue')
-            i += 1
+        for a,fn,t,l,c in data:
+            self.treeview.insert('', 'end', values=(a,fn,t,l,c))
 
 
 class ViewFilteredFlights:
@@ -258,44 +214,52 @@ class ViewFilteredFlights:
         self.inner_frame.pack()
         canvas.create_window((0, 0), window=self.inner_frame, anchor='nw')
 
-        self.airline_header = ttk.Entry(self.inner_frame)
-        self.airline_header.grid(row=0, column=0)
-        self.airline_header.insert(END, 'Airline')
-        self.airline_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-
-        self.flight_no_header = ttk.Entry(self.inner_frame)
-        self.flight_no_header.grid(row=0, column=1)
-        self.flight_no_header.insert(END, 'Flight Number')
-        self.flight_no_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-
-        self.takeoff_header = ttk.Entry(self.inner_frame)
-        self.takeoff_header.grid(row=0, column=2)
-        self.takeoff_header.insert(END, 'Takeoff Country')
-        self.takeoff_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-
-        self.landing_header = ttk.Entry(self.inner_frame)
-        self.landing_header.grid(row=0, column=3)
-        self.landing_header.insert(END, 'Landing Country')
-        self.landing_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-
-        self.cost_header = ttk.Entry(self.inner_frame)
-        self.cost_header.grid(row=0, column=4)
-        self.cost_header.insert(END, 'Cost')
-        self.cost_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-
-        self.airline_entry = ttk.Entry(self.inner_frame)
-        self.flight_no_entry = ttk.Entry(self.inner_frame)
-        self.takeoff_entry = ttk.Entry(self.inner_frame)
-        self.landing_entry = ttk.Entry(self.inner_frame)
-        self.cost_entry = ttk.Entry(self.inner_frame)
-
-        #idk if these should be in diff order
-
-        self.airline_entry_list = []
-        self.flight_no_entry_list = []
-        self.takeoff_entry_list = []
-        self.landing_entry_list = []
-        self.cost_entry_list = []
+        # self.airline_header = ttk.Entry(self.inner_frame)
+        # self.airline_header.grid(row=0, column=0)
+        # self.airline_header.insert(END, 'Airline')
+        # self.airline_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
+        #
+        # self.flight_no_header = ttk.Entry(self.inner_frame)
+        # self.flight_no_header.grid(row=0, column=1)
+        # self.flight_no_header.insert(END, 'Flight Number')
+        # self.flight_no_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
+        #
+        # self.takeoff_header = ttk.Entry(self.inner_frame)
+        # self.takeoff_header.grid(row=0, column=2)
+        # self.takeoff_header.insert(END, 'Takeoff Country')
+        # self.takeoff_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
+        #
+        # self.landing_header = ttk.Entry(self.inner_frame)
+        # self.landing_header.grid(row=0, column=3)
+        # self.landing_header.insert(END, 'Landing Country')
+        # self.landing_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
+        #
+        # self.cost_header = ttk.Entry(self.inner_frame)
+        # self.cost_header.grid(row=0, column=4)
+        # self.cost_header.insert(END, 'Cost')
+        # self.cost_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
+        #
+        # self.airline_entry = ttk.Entry(self.inner_frame)
+        # self.flight_no_entry = ttk.Entry(self.inner_frame)
+        # self.takeoff_entry = ttk.Entry(self.inner_frame)
+        # self.landing_entry = ttk.Entry(self.inner_frame)
+        # self.cost_entry = ttk.Entry(self.inner_frame)
+        #
+        # #idk if these should be in diff order
+        #
+        # self.airline_entry_list = []
+        # self.flight_no_entry_list = []
+        # self.takeoff_entry_list = []
+        # self.landing_entry_list = []
+        # self.cost_entry_list = []
+        columns = ('Airline', 'FN', 'Takeoff', 'Landing', 'Cost')
+        self.treeview = ttk.Treeview(self.inner_frame, columns=columns, show="headings")
+        self.treeview.pack()
+        self.treeview.heading(column=0, text='Airline')
+        self.treeview.heading(column=1, text='Flight Number')
+        self.treeview.heading(column=2, text='Takeoff')
+        self.treeview.heading(column=3, text='Landing')
+        self.treeview.heading(column=4, text='Cost')
 
         frame4 = ttk.Frame(self.view_ff)
         frame4.pack(fill=X, expand=True)
@@ -306,101 +270,31 @@ class ViewFilteredFlights:
         canvas.config(scrollregion=canvas.bbox("all"))
         canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
+    def clear_treeview(self):
+        for item in self.treeview.get_children():
+            self.treeview.delete(item)
+
     def fill_table(self):
+        self.clear_treeview()
         lst = self.v_ff_controller.model.agency.flights.flights
-
-        self.airline_entry.destroy()
-        self.flight_no_entry.destroy()
-        self.takeoff_entry.destroy()
-        self.landing_entry.destroy()
-        self.cost_entry.destroy()
-
-        i = 1
+        data = []
         for f in lst:
-            self.airline_entry = ttk.Entry(self.inner_frame)
-            self.airline_entry.grid(row=i, column=0, )
-            self.airline_entry.insert(END, f.airline)
-            self.airline_entry.config(state=DISABLED, foreground='light blue')
-            self.airline_entry_list.append(self.airline_entry)
+            flight = (f.airline, f.flight_no, f.takeoff, f.landing, f.cost)
+            data.append(flight)
 
-            self.flight_no_entry = ttk.Entry(self.inner_frame)
-            self.flight_no_entry.grid(row=i, column=1)
-            self.flight_no_entry.insert(END, f.flight_no)
-            self.flight_no_entry.config(state=DISABLED, foreground='light blue')
-            self.flight_no_entry_list.append(self.flight_no_entry)
-
-            self.takeoff_entry = ttk.Entry(self.inner_frame)
-            self.takeoff_entry.grid(row=i, column=2)
-            self.takeoff_entry.insert(END, f.takeoff)
-            self.takeoff_entry.config(state=DISABLED, foreground='light blue')
-            self.takeoff_entry_list.append(self.takeoff_entry)
-
-            self.landing_entry = ttk.Entry(self.inner_frame)
-            self.landing_entry.grid(row=i, column=3)
-            self.landing_entry.insert(END, f.landing)
-            self.landing_entry.config(state=DISABLED, foreground='light blue')
-            self.landing_entry_list.append(self.landing_entry)
-
-            self.cost_entry = ttk.Entry(self.inner_frame)
-            self.cost_entry.grid(row=i, column=4)
-            self.cost_entry.insert(END, f.cost)
-            self.cost_entry.config(state=DISABLED, foreground='light blue')
-            self.cost_entry_list.append(self.cost_entry)
-            i += 1
-
-    def delete_entry(self):
-        for a in self.airline_entry_list:
-            a.destroy()
-
-        for fn in self.flight_no_entry_list:
-            fn.destroy()
-
-        for t in self.takeoff_entry_list:
-            t.destroy()
-
-        for l in self.landing_entry_list:
-            l.destroy()
-
-        for c in self.cost_entry_list:
-            c.destroy()
+        for a, fn, t, l, c in data:
+            self.treeview.insert('', 'end', values=(a, fn, t, l, c))
 
     def filtered_table(self):
-        self.delete_entry()
+        self.clear_treeview()
         lst = self.v_ff_controller.view_filtered_flights(self.input_entry.get())
-        # print('\n NEW NEW NEW \n')
-        # print(len(lst))
-        for i in range(len(lst)):
-            # print(lst[i].airline, lst[i].flight_no, lst[i].takeoff + ' to ' + lst[i].landing, lst[i].cost)
+        data = []
+        for f in lst:
+            flight = (f.airline, f.flight_no, f.takeoff, f.landing, f.cost)
+            data.append(flight)
 
-            self.airline_entry = ttk.Entry(self.inner_frame, width=20, font=('Arial', 16, 'bold'))
-            self.airline_entry.grid(row=i + 1, column=0)
-            self.airline_entry.insert(END, lst[i].airline)
-            self.airline_entry.config(state=DISABLED, foreground='light blue')
-            self.airline_entry_list.append(self.airline_entry)
-
-            self.flight_no_entry = ttk.Entry(self.inner_frame, width=20, font=('Arial', 16, 'bold'))
-            self.flight_no_entry.grid(row=i + 1, column=1)
-            self.flight_no_entry.insert(END, lst[i].flight_no)
-            self.flight_no_entry.config(state=DISABLED, foreground='light blue')
-            self.flight_no_entry_list.append(self.flight_no_entry)
-
-            self.takeoff_entry = ttk.Entry(self.inner_frame, width=20, font=('Arial', 16, 'bold'))
-            self.takeoff_entry.grid(row=i + 1, column=2)
-            self.takeoff_entry.insert(END, lst[i].takeoff)
-            self.takeoff_entry.config(state=DISABLED, foreground='light blue')
-            self.takeoff_entry_list.append(self.takeoff_entry)
-
-            self.landing_entry = ttk.Entry(self.inner_frame, width=20, font=('Arial', 16, 'bold'))
-            self.landing_entry.grid(row=i + 1, column=3)
-            self.landing_entry.insert(END, lst[i].landing)
-            self.landing_entry.config(state=DISABLED, foreground='light blue')
-            self.landing_entry_list.append(self.landing_entry)
-
-            self.cost_entry = ttk.Entry(self.inner_frame, width=20, font=('Arial', 16, 'bold'))
-            self.cost_entry.grid(row=i + 1, column=4)
-            self.cost_entry.insert(END, lst[i].cost)
-            self.cost_entry.config(state=DISABLED, foreground='light blue')
-            self.cost_entry_list.append(self.cost_entry)
+        for a, fn, t, l, c in data:
+            self.treeview.insert('', 'end', values=(a, fn, t, l, c))
 
 
 class AddFlight:
@@ -425,6 +319,7 @@ class AddFlight:
         ttk.Label(frame3, text='Takeoff:').grid(row=2, column=0)
         ttk.Label(frame3, text='Landing:').grid(row=3, column=0)
         ttk.Label(frame3, text='Cost:').grid(row=4, column=0)
+
         self.airline_tf = ttk.Entry(frame3)
         self.fn_tf = ttk.Entry(frame3)
         self.takeoff_tf = ttk.Entry(frame3)
@@ -556,39 +451,37 @@ class ViewAllDestinations:   #it doesn't auto update, need to fix that
         ttk.Label(frame2, text='Destinations', foreground='blue', width=20, font=('Arial', 16, 'bold')).pack()
         self.frame3 = ttk.Frame(self.view_all_destinations)
         self.frame3.pack()
-
-        self.name_header = ttk.Entry(self.frame3, width=20, font=('Arial', 20, 'bold'))
-        self.name_header.grid(row=0, column=0)
-        self.name_header.insert(5, 'Name')
-        self.country_header = ttk.Entry(self.frame3, width=20, font=('Arial', 20, 'bold'))
-        self.country_header.grid(row=0, column=1)
-        self.country_header.insert(5, 'Country')
-        self.name_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-        self.country_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-
-        self.name_entry = ttk.Entry(self.frame3, width=20, font=('Arial', 16, 'bold'))
-        self.country_entry = ttk.Entry(self.frame3, width=20, font=('Arial', 16, 'bold'))
-
+        columns = ('Name', 'Country')
+        self.t = ttk.Treeview(self.frame3, columns=columns, show="headings")
+        self.t.pack(fill=BOTH, expand=True)
+        self.t.heading(column=0, text='Name')
+        self.t.heading(column=1, text='Country')
         frame4 = ttk.Frame(self.view_all_destinations)
         frame4.pack(fill=X, expand=True)
         ttk.Button(frame4, text='Close', command=self.view_all_destinations.destroy).pack(side=tk.RIGHT, fill=BOTH, expand=True)
-        self.fill_table()
+
+        self.lst = self.vad_controller.model.agency.destinations.destinations
+        # self.lst_var = tk.IntVar()
+        # self.lst_var.set(len(self.lst))
+        # self.lst_var.trace("w", lambda *args: print('called'))
+        # to make this work, this variable has to be updated everywhere whenever a change is made
         self.view_all_destinations.bind('<Return>', lambda e: self.fill_table()) #bind this to the event of buttons being clicked
+        self.fill_table()
+
+    def clear_treeview(self):
+        for item in self.t.get_children():
+            self.t.delete(item)
 
     def fill_table(self):
-        lst = self.vad_controller.model.agency.destinations.destinations
-        self.name_entry.destroy()
-        self.country_entry.destroy()
-        for i in range(len(lst)):
-            self.name_entry = ttk.Entry(self.frame3, width=20, font=('Arial', 16, 'bold'))
-            self.name_entry.grid(row=i+1, column=0)
-            self.name_entry.insert(END, lst[i].name)
-            self.name_entry.config(state=DISABLED, foreground='light blue')
+        self.clear_treeview()
+        lst = self.lst
+        data = []
+        for d in self.lst:
+            desti = (d.name, d.country)
+            data.append(desti)
 
-            self.country_entry = ttk.Entry(self.frame3, width=20, font=('Arial', 16, 'bold'))
-            self.country_entry.grid(row=i+1, column=1)
-            self.country_entry.insert(END, lst[i].country)
-            self.country_entry.config(state=DISABLED, foreground='light blue')
+        for n,c in data:
+            self.t.insert('', 'end', values=(n, c))
 
 
 class ViewFilteredDestinations:
@@ -605,19 +498,15 @@ class ViewFilteredDestinations:
         ttk.Label(frame2, text='Destinations', foreground='blue', width=20, font=('Arial', 16, 'bold')).pack()
         self.input_entry = ttk.Entry(frame2)
         self.input_entry.pack(side=tk.RIGHT, fill=X, expand=True)
+
         self.frame3 = ttk.Frame(self.view_filtered_d)
         self.frame3.pack()
-        self.name_header = ttk.Entry(self.frame3, width=20, font=('Arial', 20, 'bold'))
-        self.name_header.grid(row=0, column=0)
-        self.name_header.insert(5, 'Name')
-        self.country_header = ttk.Entry(self.frame3, width=20, font=('Arial', 20, 'bold'))
-        self.country_header.grid(row=0, column=1)
-        self.country_header.insert(5, 'Country')
-        self.name_entry = ttk.Entry(self.frame3, width=20, font=('Arial', 16, 'bold'))
-        self.country_entry = ttk.Entry(self.frame3, width=20, font=('Arial', 16, 'bold'))
 
-        self.name_entry_list = []
-        self.country_entry_list = []
+        columns = ('Name', 'Country')
+        self.treeview = ttk.Treeview(self.frame3, columns=columns, show="headings")
+        self.treeview.pack()
+        self.treeview.heading(column=0, text='Name')
+        self.treeview.heading(column=1, text='Country')
 
         frame4 = ttk.Frame(self.view_filtered_d)
         frame4.pack(fill=X, expand=True)
@@ -625,45 +514,31 @@ class ViewFilteredDestinations:
         self.fill_table()
         self.input_entry.bind('<KeyRelease>', lambda e: self.filtered_table())
 
+    def clear_treeview(self):
+        for item in self.treeview.get_children():
+            self.treeview.delete(item)
+
     def fill_table(self):
+        self.clear_treeview()
         lst = self.vf_controller.model.agency.destinations.destinations
-        for i in range(len(lst)):
-            self.name_entry = ttk.Entry(self.frame3, width=20, font=('Arial', 16, 'bold'))
-            self.name_entry.grid(row=i + 1, column=0)
-            self.name_entry.insert(END, lst[i].name)
-            self.name_entry.config(state=DISABLED, foreground='light blue')
-            self.name_entry_list.append(self.name_entry)
+        data = []
+        for d in lst:
+            desti = (d.name, d.country)
+            data.append(desti)
 
-            self.country_entry = ttk.Entry(self.frame3, width=20, font=('Arial', 16, 'bold'))
-            self.country_entry.grid(row=i + 1, column=1)
-            self.country_entry.insert(END, lst[i].country)
-            self.country_entry.config(state=DISABLED, foreground='light blue')
-            self.country_entry_list.append(self.country_entry)
-
-    def delete_entry(self):
-        for n in self.name_entry_list:
-            n.destroy()
-
-        for c in self.country_entry_list:
-            c.destroy()
+        for n, c in data:
+            self.treeview.insert('', 'end', values=(n, c))
 
     def filtered_table(self):
-        self.delete_entry()
+        self.clear_treeview()
         lst = self.vf_controller.view_filtered_destinations(self.input_entry.get())
+        data = []
+        for d in lst:
+            desti = (d.name, d.country)
+            data.append(desti)
 
-        for i in range(len(lst)):
-            # print(lst[i].name, lst[i].country) # this works!, but I'm not sure how to make the view agree
-            self.name_entry = ttk.Entry(self.frame3, width=20, font=('Arial', 16, 'bold'))
-            self.name_entry.grid(row=i + 1, column=0)
-            self.name_entry.insert(END, lst[i].name)
-            self.name_entry.config(state=DISABLED, foreground='light blue')
-            self.name_entry_list.append(self.name_entry)
-
-            self.country_entry = ttk.Entry(self.frame3, width=20, font=('Arial', 16, 'bold'))
-            self.country_entry.grid(row=i + 1, column=1)
-            self.country_entry.insert(END, lst[i].country)
-            self.country_entry.config(state=DISABLED, foreground='light blue')
-            self.country_entry_list.append(self.country_entry)
+        for n, c in data:
+            self.treeview.insert('', 'end', values=(n, c))
 
 
 class AddDestination:
@@ -750,7 +625,7 @@ class RemoveDestination:
 
     def remove_the_destination(self):
         try:
-            self.ad_controller.remove_trip_d(self.name_tf.get(), self.country_tf.get())
+            self.ad_controller.remove_destination(self.name_tf.get(), self.country_tf.get())
             self.remove_destination.destroy()
         except Exception as e:
             ErrorWindow(Exception, e)
@@ -939,22 +814,31 @@ class ViewTrip:
                     self.treeview.insert('', 'end', text=i.name + ' in ' + i.country, values=i.__class__)
                 else:
                     self.treeview.insert('', 'end', text=i.airline + ' ' + str(i.flight_no) +
-                                                         ' from ' + i.takeoff + ' to ' + i.landing + ' for ' + str(i.cost), values=i.__class__)
+                                 ' from ' + i.takeoff + ' to ' + i.landing + ' for ' + str(i.cost), values=i.__class__)
+
+    def is_desti(self, selection):
+        for item in selection:
+            item_class = self.treeview.item(item, option='values')
+            if item_class[1] != "'Destination.Destination'>":
+                return False
+        return True
+
+    def is_flight(self, selection):
+        for item in selection:
+            item_class = self.treeview.item(item, option='values')
+            if item_class[1] != "'Flight.Flight'>":
+                return False
+        return True
 
     def view_individual(self):
-        selected_obj = self.treeview.item(self.treeview.focus(), "values")
-        print(selected_obj[1])
-        if selected_obj[1] == "'Destination.Destination'>":
-            print('its a desti')
-            # ViewAllDestinations(self.vt_ctrl)
-        elif selected_obj[1] == "'Flight.Flight'>":
-            print('its a flight')
-            # ViewAllFlights(self.vt_ctrl)
+        if self.is_desti(self.treeview.selection()):
+            ViewAllDestinations(self.vt_ctrl)
+        elif self.is_flight(self.treeview.selection()):
+            ViewAllFlights(self.vt_ctrl)
         else:
-            print('its nun')
-            #this doesn't work, figure out a way to check if multiple things have been selected and
-            # throw error window from therrrE
-            # ONDEROOS!
+            ErrorWindow('ID 10 T Err: idiosyncratic Selection', 'View a Flight or Destination individually, not both')
+
+
 
 
 
