@@ -30,7 +30,7 @@ class Trip:
 
     def add_td(self, destination: Destination):
         if not self.agency_has_destination(destination.name, destination.country):
-            raise Exception('THAT DONT EXIST IN THE AGENCY nigga')
+            raise ValueError('Add to agency first, then you can add to the trip')
         if self.trip_has_destination(destination.name, destination.country):
             raise Exception('YOU ALREADY ADDED THIS')
         else:
@@ -44,7 +44,7 @@ class Trip:
             # # print('\n NEW NEW NEW \n')
             # for d in self.destinations.destinations:
             #     print(d.name, d.country)
-            raise Exception('THAT DONT EXIST IN THE TRIPS U ADDED, nigga')
+            raise Exception('THAT does not EXIST IN THE TRIPS U ADDED')
         else:
             self.destinations.destinations.remove(self.get_destination(destination.name, destination.country))
             # print('\n NEW NEW NEW \n')
@@ -54,7 +54,7 @@ class Trip:
     def add_connecting_flights(self):
         if len(self.destinations.destinations) <= 1:
             # throw error
-            raise Exception("Not enough destinations")
+            raise Exception("Add more destinations first!")
         self.flights.flights.clear()
         current_destination = None
         next_destination = None

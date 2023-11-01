@@ -10,7 +10,7 @@ class Destinations:
     def add_destination(self, destination: Destination):
         if self.has_destination(destination.name, destination.country):
             #throw error
-            raise Exception('We already have this destination ')
+            raise Exception('We already have this destination')
         else:
             self.destinations.append(destination)
             Utils.add_flights_for_destination(self.destinations[-1], self.agency)
@@ -18,7 +18,7 @@ class Destinations:
     def remove_destination(self, destination: Destination):
         if not self.has_destination(destination.name, destination.country):
             #throw error
-            raise Exception('destination DOnt EXIST ')
+            raise Exception('destination does not EXIST ')
         else:
             self.destinations.remove(self.get_destination(destination.name, destination.country))
     

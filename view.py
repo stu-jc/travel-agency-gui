@@ -79,7 +79,7 @@ class View:
         if self.controller:
             self.controller.login(self.login_tf.get(), self.pwd_tf.get())
             if self.controller.logged_in_user is None:
-                ErrorWindow('Incorrect details', 'Enter correct details')
+                ErrorWindow('LoginFailedException', 'Enter the correct login details')
             else:
                 AgencyWindow(self.controller.logged_in_user, self.controller)
                 self.root.withdraw()
@@ -113,10 +113,10 @@ class AgencyWindow:
         separator.pack(fill=X)
         frame3 = ttk.Frame(self.agency_window)
         frame3.pack(side=BOTTOM, expand=True, pady=(15,0), fill=X)
-        ttk.Button(frame3, text='Explore Flights', style='B.TButton', command=self.exp_flights).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='Explore Destinations', style='B.TButton', command=self.exp_destinations).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='Book a Trip', style='B.TButton', command=self.book_trip).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='Exit', style='B.TButton', command=exit).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Explore Flights', command=self.exp_flights).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Explore Destinations', command=self.exp_destinations).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Book a Trip', command=self.book_trip).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Exit', command=exit).pack(side=tk.LEFT, expand=True, fill=X)
 
     def exp_flights(self):
         FlightsMenu(self.user, self.agency_controller)
@@ -131,15 +131,34 @@ class AgencyWindow:
 class ErrorWindow:
     def __init__(self, exception, error_msg):
         self.error_window = Toplevel()
-        self.error_window.title('ERROR')
+        self.error_window.title('Error')
         photo = tk.PhotoImage(file="/Users/jc/Desktop/A2.zip/icons/error_icon.png")
         self.error_window.iconphoto(True, photo)
         frame1 = ttk.Frame(self.error_window)
-        frame1.pack()
-        self.exc_label = ttk.Label(frame1, text=f'{exception}', style='Header.TLabel', foreground='red')
-        self.msg_label = ttk.Label(frame1, text=f'{error_msg}')
+        frame1.pack(side=TOP, fill=BOTH, expand=True, pady=(0, 15), padx=10)
+        image_path = "/Users/jc/Desktop/A2.zip/images/error.png"
+        original_image = Image.open(image_path)
+        tk_image = ImageTk.PhotoImage(original_image)
+        label = tk.Label(frame1, image=tk_image, width=700, height=300)
+        label.pack()
+        label.image = tk_image
+        separator = ttk.Separator(self.error_window, orient="horizontal")
+        separator.pack(fill=X, padx=10)
+        frame2 = ttk.Frame(self.error_window)
+        frame2.pack(fill=BOTH, side=TOP, expand=True, padx=10, pady=10)
+        ttk.Label(frame2, text='Error',
+                  style='Header.TLabel').pack()
+        separator = ttk.Separator(self.error_window, orient="horizontal")
+        separator.pack(fill=X, padx=10)
+        frame3 = ttk.Frame(self.error_window)
+        frame3.pack()
+        self.exc_label = ttk.Label(frame3, text=f'{exception}', style='Header.TLabel', foreground='red', padding=(0,10))
+        self.msg_label = ttk.Label(frame3, text=f'{error_msg}', style='SubHeader.TLabel')
         self.exc_label.pack()
         self.msg_label.pack()
+        frame4 = ttk.Frame(self.error_window)
+        frame4.pack(side=BOTTOM, expand=True, padx=10, pady=10,fill=X)
+        ttk.Button(frame4, text='Close', command=self.error_window.destroy, ).pack(expand=True, fill=X, side=BOTTOM)
 
 
 class FlightsMenu:
@@ -242,6 +261,7 @@ class ViewAllFlights:
         ttk.Button(frame4, text='Close', command=self.view_all_flights.destroy).pack(side=BOTTOM, fill=X, expand=True)
         self.fill_table()
         self.view_all_flights.bind('<Return>', lambda e: self.fill_table())
+        self.view_all_flights.bind('<Button-1>', lambda e: self.fill_table())
         # !! bind this to the event of add and remove buttons being clicked
         self.inner_frame.update_idletasks()
         canvas.config(scrollregion=canvas.bbox("all"))
@@ -432,7 +452,7 @@ class AddFlight:
         ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,column=1)
         ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,column=2)
         ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0, column=3)
-        tk.Label(frame3, text='Airline:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=0, column=5, sticky='w')
+        ttk.Label(frame3, text='Airline:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=0, column=5, sticky='w')
         ttk.Label(frame3, text='Flight Number:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=1, column=5, sticky='w')
         ttk.Label(frame3, text='Takeoff:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=2, column=5, sticky='w')
         ttk.Label(frame3, text='Landing:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=3, column=5, sticky='w')
@@ -450,7 +470,7 @@ class AddFlight:
         self.cost_tf.grid(row=4, column=6)
 
         frame4 = ttk.Frame(self.add_flights)
-        frame4.pack(side=BOTTOM, fill=BOTH, expand=True)
+        frame4.pack(side=BOTTOM, fill=BOTH, expand=True, pady=(15,0))
         self.add_btn = ttk.Button(frame4, text='Add Flight', command=self.add_the_flight)
         self.add_btn.pack(side=LEFT, fill=BOTH, expand=True)
         self.add_btn.config(state=DISABLED)
@@ -466,8 +486,10 @@ class AddFlight:
         try:
             self.af_controller.add_flight(self.airline_tf.get(), self.fn_tf.get(),  self.takeoff_tf.get(), self.landing_tf.get(), self.cost_tf.get())
             self.add_flights.destroy()
+        except ValueError as e:
+            ErrorWindow('ValueError', e)
         except Exception as e:
-            ErrorWindow(Exception, e)
+            ErrorWindow('FlightAlreadyExistsErr', e)
 
     def set_btn(self):
         if len(self.airline_tf.get()) != 0 and len(self.fn_tf.get()) != 0 and len(self.takeoff_tf.get()) != 0 and len(self.landing_tf.get()) != 0 and len(self.cost_tf.get()) != 0:
@@ -506,7 +528,7 @@ class RemoveFlight:
         ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0, column=1)
         ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0, column=2)
         ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0, column=3)
-        ttk.Label(frame3, text='Takeoff:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=0, column=5, sticky='w')
+        ttk.Label(frame3, text='Takeoff:', padding=(0,10), foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=0, column=5, sticky='w')
         ttk.Label(frame3, text='Landing:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=1, column=5, sticky='w')
         self.take_tf = ttk.Entry(frame3)
         self.land_tf = ttk.Entry(frame3)
@@ -528,7 +550,7 @@ class RemoveFlight:
             self.rf_controller.remove_flight(self.take_tf.get(), self.land_tf.get())
             self.remove_flight.destroy()
         except Exception as e:
-            ErrorWindow(Exception, e)
+            ErrorWindow('DoesNotExistErr', e)
 
     def set_btn(self):
         if len(self.take_tf.get()) != 0 and len(self.land_tf.get()) != 0:
@@ -627,7 +649,8 @@ class ViewAllDestinations:   #it doesn't auto update, need to fix that
         # self.lst_var.set(len(self.lst))
         # self.lst_var.trace("w", lambda *args: print('called'))
         # to make this work, this variable has to be updated everywhere whenever a change is made
-        self.view_all_destinations.bind('<Return>', lambda e: self.fill_table()) #bind this to the event of buttons being clicked
+        self.view_all_destinations.bind('<Return>', lambda e: self.fill_table())
+        self.view_all_destinations.bind('<Button-1>', lambda e: self.fill_table()) #bind this to the event of buttons being clicked
         self.fill_table()
 
     def clear_treeview(self):
@@ -752,23 +775,43 @@ class AddDestination:
         self.ad_controller = controller
 
         self.add_destination.title('Add Destination')
-        self.add_destination.geometry("600x600")
         frame1 = ttk.Frame(self.add_destination)
         frame1.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        # picture goes here
+        frame1.pack(pady=(0, 15))
+        image_path = "/Users/jc/Desktop/A2.zip/images/destination.png"
+        original_image = Image.open(image_path)
+        tk_image = ImageTk.PhotoImage(original_image)
+        label = tk.Label(frame1, image=tk_image, width=1000, height=200)
+        label.pack()
+        label.image = tk_image
 
+        separator = ttk.Separator(self.add_destination, orient="horizontal")
+        separator.pack(fill=X)
         frame2 = ttk.Frame(self.add_destination)
         frame2.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        ttk.Label(frame2, text='Add a Destination', style='Header.TLabel').pack()
+        ttk.Label(frame2, text='Add a Destination', style='Header.TLabel').pack(pady=20)
+        separator = ttk.Separator(self.add_destination, orient="horizontal")
+        separator.pack(fill=X)
 
         frame3 = ttk.Frame(self.add_destination)
-        frame3.pack(side=tk.TOP, fill=tk.BOTH)
-        ttk.Label(frame3, text='Name:').grid(row=0, column=0)
-        ttk.Label(frame3, text='Country:').grid(row=1, column=0)
+        frame3.pack(side=tk.TOP, fill=tk.BOTH, pady=20)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=0,
+                                                                                                              columnspan=4)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=1)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=2)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=3)
+        ttk.Label(frame3, text='Name:', padding=(0, 10), foreground="#168FC1", font=('Helvetica', 15, 'bold'),
+                  justify='left', anchor='w').grid(row=0, column=5, sticky='w')
+        ttk.Label(frame3, text='Country:', foreground="#168FC1", font=('Helvetica', 15, 'bold'), justify='left',
+                  anchor='w').grid(row=1, column=5, sticky='w')
         self.name_tf = ttk.Entry(frame3)
         self.country_tf = ttk.Entry(frame3)
-        self.name_tf.grid(row=0, column=1)
-        self.country_tf.grid(row=1, column=1)
+        self.name_tf.grid(row=0, column=6)
+        self.country_tf.grid(row=1, column=6)
 
         frame4 = ttk.Frame(self.add_destination)
         frame4.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
@@ -785,7 +828,7 @@ class AddDestination:
             self.ad_controller.add_destination(self.name_tf.get(), self.country_tf.get())
             self.add_destination.destroy()
         except Exception as e:
-            ErrorWindow(Exception, e)
+            ErrorWindow('DestinationDuplicate', e)
 
     def set_btn(self):
         if len(self.name_tf.get()) != 0 and len(self.country_tf.get()) != 0:
@@ -801,7 +844,6 @@ class RemoveDestination:
 
         self.remove_destination.title('Remove Destination')
         frame1 = ttk.Frame(self.remove_destination)
-        frame1.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         frame1.pack(pady=(0, 15))
         image_path = "/Users/jc/Desktop/A2.zip/images/destination.png"
         original_image = Image.open(image_path)
@@ -819,7 +861,7 @@ class RemoveDestination:
         separator.pack(fill=X)
 
         frame3 = ttk.Frame(self.remove_destination)
-        frame3.pack(side=tk.TOP, fill=tk.BOTH)
+        frame3.pack(side=tk.TOP, fill=tk.BOTH, pady=20)
         ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
                                                                                                               column=0,
                                                                                                               columnspan=4)
@@ -829,8 +871,8 @@ class RemoveDestination:
                                                                                                               column=2)
         ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
                                                                                                               column=3)
-        ttk.Label(frame3, text='Name:', padding=(0,10), foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=0, column=5, sticky='w')
-        ttk.Label(frame3, text='Country:', padding=(0,10), foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=1, column=5, sticky='w')
+        ttk.Label(frame3, text='Name:',padding=(0,10), foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=0, column=5, sticky='w')
+        ttk.Label(frame3, text='Country:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=1, column=5, sticky='w')
         self.name_tf = ttk.Entry(frame3)
         self.country_tf = ttk.Entry(frame3)
         self.name_tf.grid(row=0, column=6)
@@ -851,7 +893,7 @@ class RemoveDestination:
             self.ad_controller.remove_destination(self.name_tf.get(), self.country_tf.get())
             self.remove_destination.destroy()
         except Exception as e:
-            ErrorWindow(Exception, e)
+            ErrorWindow('DoesNotExistErr', e)
 
     def set_btn(self):
         if len(self.name_tf.get()) != 0 and len(self.country_tf.get()) != 0:
@@ -938,7 +980,7 @@ class TripsMenu:
         try:
             self.tm_controller.add_connecting_flights()
         except Exception as e:
-            ErrorWindow(Exception, e)
+            ErrorWindow('ListLengthErr', e)
 
     def view_trip(self):
         #this is gonna have to be a treeview so I can do something when it's selected
@@ -950,24 +992,45 @@ class AddTripDestination:
         self.add_trip_d = Toplevel()
         self.atd_controller = ctrl
 
-        self.add_trip_d.title('Add Destination')
-        self.add_trip_d.geometry("600x600")
+        self.add_trip_d.title('Add Trip Destination')
+        frame1 = ttk.Frame(self.add_trip_d)
         frame1 = ttk.Frame(self.add_trip_d)
         frame1.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        # picture goes here
+        frame1.pack(pady=(0, 15))
+        image_path = "/Users/jc/Desktop/A2.zip/images/destination.png"
+        original_image = Image.open(image_path)
+        tk_image = ImageTk.PhotoImage(original_image)
+        label = tk.Label(frame1, image=tk_image, width=1000, height=200)
+        label.pack()
+        label.image = tk_image
 
+        separator = ttk.Separator(self.add_trip_d, orient="horizontal")
+        separator.pack(fill=X)
         frame2 = ttk.Frame(self.add_trip_d)
         frame2.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        ttk.Label(frame2, text='Add a Destination', style='Header.TLabel').pack()
+        ttk.Label(frame2, text='Add a Destination', style='Header.TLabel').pack(pady=20)
+        separator = ttk.Separator(self.add_trip_d, orient="horizontal")
+        separator.pack(fill=X)
 
         frame3 = ttk.Frame(self.add_trip_d)
-        frame3.pack(side=tk.TOP, fill=tk.BOTH)
-        ttk.Label(frame3, text='Name:').grid(row=0, column=0)
-        ttk.Label(frame3, text='Country:').grid(row=1, column=0)
+        frame3.pack(side=tk.TOP, fill=tk.BOTH, pady=20)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=0,
+                                                                                                              columnspan=4)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=1)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=2)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=3)
+        ttk.Label(frame3, text='Name:', padding=(0, 10), foreground="#168FC1", font=('Helvetica', 15, 'bold'),
+                  justify='left', anchor='w').grid(row=0, column=5, sticky='w')
+        ttk.Label(frame3, text='Country:', foreground="#168FC1", font=('Helvetica', 15, 'bold'), justify='left',
+                  anchor='w').grid(row=1, column=5, sticky='w')
         self.name_tf = ttk.Entry(frame3)
         self.country_tf = ttk.Entry(frame3)
-        self.name_tf.grid(row=0, column=1)
-        self.country_tf.grid(row=1, column=1)
+        self.name_tf.grid(row=0, column=6)
+        self.country_tf.grid(row=1, column=6)
 
         frame4 = ttk.Frame(self.add_trip_d)
         frame4.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
@@ -983,8 +1046,10 @@ class AddTripDestination:
         try:
             self.atd_controller.add_trip_destination(self.name_tf.get(), self.country_tf.get())
             self.add_trip_d.destroy()
+        except ValueError as e:
+            ErrorWindow('DoesNotExistErr', e)
         except Exception as e:
-            ErrorWindow(Exception, e)
+            ErrorWindow('Duplicate Desti', e)
 
     def set_btn(self):
         if len(self.name_tf.get()) != 0 and len(self.country_tf.get()) != 0:
@@ -998,24 +1063,43 @@ class RemoveTripDestination:
         self.rtd_c = ctrl
         self.remove_trip_d = Toplevel()
 
-        self.remove_trip_d.title('Remove Destination')
-        self.remove_trip_d.geometry("600x600")
+        self.remove_trip_d.title('Remove Trip Destination')
         frame1 = ttk.Frame(self.remove_trip_d)
-        frame1.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        # picture goes here
+        frame1.pack(pady=(0, 15))
+        image_path = "/Users/jc/Desktop/A2.zip/images/destination.png"
+        original_image = Image.open(image_path)
+        tk_image = ImageTk.PhotoImage(original_image)
+        label = tk.Label(frame1, image=tk_image, width=1000, height=200)
+        label.pack()
+        label.image = tk_image
 
+        separator = ttk.Separator(self.remove_trip_d, orient="horizontal")
+        separator.pack(fill=X)
         frame2 = ttk.Frame(self.remove_trip_d)
         frame2.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        ttk.Label(frame2, text='Remove a Destination', style='Header.TLabel').pack()
+        ttk.Label(frame2, text='Remove a Destination', style='Header.TLabel').pack(pady=20)
+        separator = ttk.Separator(self.remove_trip_d, orient="horizontal")
+        separator.pack(fill=X)
 
         frame3 = ttk.Frame(self.remove_trip_d)
-        frame3.pack(side=tk.TOP, fill=tk.BOTH)
-        ttk.Label(frame3, text='Name:').grid(row=0, column=0)
-        ttk.Label(frame3, text='Country:').grid(row=1, column=0)
+        frame3.pack(side=tk.TOP, fill=tk.BOTH, pady=20)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=0,
+                                                                                                              columnspan=4)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=1)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=2)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=3)
+        ttk.Label(frame3, text='Name:', padding=(0, 10), foreground="#168FC1", font=('Helvetica', 15, 'bold'),
+                  justify='left', anchor='w').grid(row=0, column=5, sticky='w')
+        ttk.Label(frame3, text='Country:', foreground="#168FC1", font=('Helvetica', 15, 'bold'), justify='left',
+                  anchor='w').grid(row=1, column=5, sticky='w')
         self.name_tf = ttk.Entry(frame3)
         self.country_tf = ttk.Entry(frame3)
-        self.name_tf.grid(row=0, column=1)
-        self.country_tf.grid(row=1, column=1)
+        self.name_tf.grid(row=0, column=6)
+        self.country_tf.grid(row=1, column=6)
 
         frame4 = ttk.Frame(self.remove_trip_d)
         frame4.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
@@ -1045,16 +1129,27 @@ class ViewTrip:
     def __init__(self, ctrl):
         self.view_trip = Toplevel()
         self.vt_ctrl = ctrl
-        self.view_trip.geometry("600x600")
         self.view_trip.title('View the Trip')
 
         frame1 = ttk.Frame(self.view_trip)
-        frame1.pack()
+        frame1.pack(pady=(0, 15))
+        image_path = "/Users/jc/Desktop/A2.zip/images/trip.png"
+        original_image = Image.open(image_path)
+        tk_image = ImageTk.PhotoImage(original_image)
+        label = tk.Label(frame1, image=tk_image, width=1000, height=200)
+        label.pack()
+        label.image = tk_image
+
+        separator = ttk.Separator(self.view_trip, orient="horizontal")
+        separator.pack(fill=X)
         frame2 = ttk.Frame(self.view_trip)
-        frame2.pack(side=TOP, fill=BOTH, expand=True)
-        ttk.Label(frame2, text='Your Trip', foreground='blue', width=20, font=('Arial', 16, 'bold')).pack()
+        frame2.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        ttk.Label(frame2, text='Your Trip', style='Header.TLabel').pack(pady=20)
+        separator = ttk.Separator(self.view_trip, orient="horizontal")
+        separator.pack(fill=X)
+
         frame3 = ttk.Frame(self.view_trip)
-        frame3.pack(side=TOP, fill=BOTH, expand=True)
+        frame3.pack(side=TOP, fill=BOTH, expand=True, pady=(15, 0))
         self.treeview = ttk.Treeview(frame3)
         self.treeview.pack(fill=BOTH, expand=True)
 
@@ -1074,13 +1169,25 @@ class ViewTrip:
             self.treeview.heading("#0", text='Nothing yet')
         else:
             self.treeview['show'] = 'tree'
-            for i in lst:
+            for index, i in enumerate(lst):
+                num = index + 1
                 x = self.vt_ctrl.desti_or_flight(i)
-                if x is True:
-                    self.treeview.insert('', 'end', text=i.name + ' in ' + i.country, values=i.__class__)
+                if num % 2 != 0:
+                    if x is True:
+                        self.treeview.insert('', 'end', text=i.name + ' in ' + i.country, values=i.__class__, tags=('oddrow',))
+                    else:
+                        self.treeview.insert('', 'end', text=i.airline + ' ' + str(i.flight_no) +
+                                     ' from ' + i.takeoff + ' to ' + i.landing + ' for ' + str(i.cost), values=i.__class__, tags=('oddrow',))
                 else:
-                    self.treeview.insert('', 'end', text=i.airline + ' ' + str(i.flight_no) +
-                                 ' from ' + i.takeoff + ' to ' + i.landing + ' for ' + str(i.cost), values=i.__class__)
+                    if x is True:
+                        self.treeview.insert('', 'end', text=i.name + ' in ' + i.country, values=i.__class__, tags=('evenrow',))
+                    else:
+                        self.treeview.insert('', 'end', text=i.airline + ' ' + str(i.flight_no) +
+                                     ' from ' + i.takeoff + ' to ' + i.landing + ' for ' + str(i.cost), values=i.__class__, tags=('evenrow',))
+
+                self.treeview.tag_configure('evenrow', background='#e1e2e3', font=("Arial", 12))
+                self.treeview.tag_configure('oddrow', font=("Arial", 12))
+
 
     def is_desti(self, selection):
         for item in selection:

@@ -3,6 +3,11 @@ from Trip import Trip
 from Flight import Flight
 from Destination import Destination
 
+class LoginFailedError(Exception):
+    def __init__(self, message="Login failed. Invalid username or password."):
+        self.message = message
+        super().__init__(self.message)
+
 
 class Model:
     def __init__(self):
@@ -15,7 +20,7 @@ class Model:
             self.agency.loggedInUser = self.agency.login(login_entry, pwd_entry)
             return self.agency.loggedInUser
         except:
-            pass # make this throw error?
+            pass
 
 #flights
     def view_flights(self):
@@ -26,17 +31,7 @@ class Model:
         return self.agency.flights.get_filtered_flights(string)
 
     def add_flight(self, airline, flight_no, takeoff, landing, cost):
-        try:
-            airline = str(airline)
-            flight_no = int(flight_no)
-            takeoff = str(takeoff)
-            landing = str(landing)
-            cost = float(cost)
-
-            flight_obj = Flight(airline, flight_no, takeoff, landing, cost)
-            self.agency.flights.add_flight(flight_obj)
-        except ValueError as e:
-            raise Exception('Error occured ' + str(e))
+        self.agency.flights.try_add_flight(airline, flight_no, takeoff, landing, cost)
 
     def remove_flight(self, takeoff, landing):
         takeoff = str(takeoff)
