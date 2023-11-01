@@ -5,30 +5,54 @@ from tkinter import ttk
 
 class View:
     def __init__(self, root):
+        #could add a thing to change the icon after close btn is pressed
         self.root = root
-        self.root.title('Login Window')
-        frame = ttk.Frame(self.root)
-        frame.pack()
-        self.root.geometry("300x200")
+        self.root.title('Login')
+        # self.root.geometry("300x200")
+        photo = tk.PhotoImage(file="/Users/jc/Desktop/A2.zip/icons/login_icon.png")
+        self.root.iconphoto(True, photo)
+        # self.root.iconbitmap(bitmap='/Users/jc/Desktop/A2.zip/icon.icns') not necessary
+        frame1 = ttk.Frame(self.root, width=200, height=150)
+        frame1.pack(side=TOP, expand=True, fill=BOTH, anchor='n')
+        frame1.config(border=True, padding=(20, 30))
         header_style = ttk.Style()
-        header_style.configure('Header.TLabel', foreground="blue", font=('Arial', 14, 'bold'), padding=(10, 5))
-        ttk.Label(frame, text='Login', style='Header.TLabel').pack()
-        frame1 = ttk.Frame(self.root)
-        frame1.pack()
-        ttk.Label(frame1, text='Username:').grid(row=0, column=0)
-        self.login_tf = ttk.Entry(frame1)
-        self.login_tf.grid(row=0, column=1)
-        ttk.Label(frame1, text='Password:').grid(row=1, column=0)
-        self.pwd_tf = ttk.Entry(frame1)
-        self.pwd_tf.grid(row=1, column=1)
+        header_style.configure('Header.TLabel', foreground="#168FC1", font=('Helvetica', 12, 'bold'))
+        ttk.Label(frame1, text='Login', style='Header.TLabel').pack(anchor='center', expand=True, fill=Y)
+        button_style = ttk.Style()
+        button_style.configure('B.TButton', font=('Arial Narrow', 11, 'bold'), border=0, borderwidth=0)
+        button_style.map('B.TButton',
+                         foreground=[('active', 'white'), ('disabled', 'white')],
+                         # background=[('active', 'red'), ('disabled', 'blue'), ('pressed', 'green')],
+                         bordercolour=[('active', 'red'), ('disabled', 'blue')]
+                        )
+        # event binding for hover on buttons
+        label_style = ttk.Style()
+        label_style.configure('L.TLabel', foreground='#168FC1', font=('Helvetica', 10, 'bold'))
+        entry_style = ttk.Style()
+        entry_style.configure('E.TEntry', bordercolour="#E2F3FF", borderwidth=0)
+        frame1.config(relief='raised')
+
         frame2 = ttk.Frame(self.root)
-        frame2.pack(side=BOTTOM, expand=True, fill=X)
-        self.login_btn = ttk.Button(frame2, text='Login', command=self.login_cmd)
-        self.login_btn.pack(side=tk.LEFT, fill=BOTH, expand=True)
-        ttk.Button(frame2, text='Exit', command=root.destroy).pack(side=tk.RIGHT, fill=BOTH, expand=True)
+        frame2.pack(side=TOP, expand=True, fill=BOTH)
+        frame2.config(border=True, borderwidth=20)
+        ttk.Label(frame2, text='Username:', style='L.TLabel').grid(row=0, column=0)
+        self.login_tf = ttk.Entry(frame2, style='E.TEntry')
+        self.login_tf.grid(row=0, column=1)
+        ttk.Label(frame2, text='Password:', style='L.TLabel').grid(row=1, column=0)
+        self.pwd_tf = ttk.Entry(frame2, style='E.TEntry')
+        self.pwd_tf.grid(row=1, column=1)
+        frame3 = ttk.Frame(self.root)
+        frame3.pack(side=BOTTOM, expand=True, fill=X, anchor='s')
+        frame3.config(border=0)
+
+        # self.login_btn = ttk.Button(frame3, text='Login', command=self.login_cmd, style='B.TButton')
+        self.login_btn = tk.Button(frame3, text='Login', command=self.login_cmd, highlightbackground='#168FC1',
+                                   foreground='white')
+        self.login_btn.pack(side=tk.LEFT, fill=X, expand=True)
+        # ttk.Button(frame3, text='Exit', style='B.TButton', command=root.destroy).pack(side=tk.RIGHT, fill=X, expand=True)
+        tk.Button(frame3, text='Exit', background='red', command=root.destroy).pack(side=tk.RIGHT, fill=X, expand=True)
         self.controller = None
         self.login_btn.config(state=DISABLED)
-
         self.pwd_tf.bind('<Return>', lambda e: self.login_cmd())
         self.login_tf.bind('<KeyRelease>', lambda e: self.set_button())
         self.pwd_tf.bind('<KeyRelease>', lambda e: self.set_button())
@@ -59,6 +83,8 @@ class AgencyWindow:
         self.agency_window = Toplevel()
         self.agency_window.title('Agency Window')
         self.agency_window.geometry("600x600")
+        photo = tk.PhotoImage(file="/Users/jc/Desktop/A2.zip/icons/agency_icon.png")
+        self.agency_window.iconphoto(False, photo)
         frame1 = ttk.Frame(self.agency_window)
         frame1.grid(row=0)
         frame2 = ttk.Frame(self.agency_window)
@@ -86,6 +112,8 @@ class ErrorWindow:
     def __init__(self, exception, error_msg):
         self.error_window = Toplevel()
         self.error_window.title('ERROR')
+        photo = tk.PhotoImage(file="/Users/jc/Desktop/A2.zip/icons/error_icon.png")
+        self.error_window.iconphoto(True, photo)
         frame1 = ttk.Frame(self.error_window)
         frame1.pack()
         self.exc_label = ttk.Label(frame1, text=f'{exception}', style='Header.TLabel', foreground='red')
@@ -99,6 +127,8 @@ class FlightsMenu:
         self.flights_window = Toplevel()
         self.flights_window.title('Flights Menu')
         self.flights_window.geometry("600x600")
+        photo = tk.PhotoImage(file="/Users/jc/Desktop/A2.zip/icons/flights_icon.png")
+        self.flights_window.iconphoto(True, photo)
         self.fm_controller = controller
         self.user = user
         frame1 = ttk.Frame(self.flights_window)
@@ -214,44 +244,6 @@ class ViewFilteredFlights:
         self.inner_frame.pack()
         canvas.create_window((0, 0), window=self.inner_frame, anchor='nw')
 
-        # self.airline_header = ttk.Entry(self.inner_frame)
-        # self.airline_header.grid(row=0, column=0)
-        # self.airline_header.insert(END, 'Airline')
-        # self.airline_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-        #
-        # self.flight_no_header = ttk.Entry(self.inner_frame)
-        # self.flight_no_header.grid(row=0, column=1)
-        # self.flight_no_header.insert(END, 'Flight Number')
-        # self.flight_no_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-        #
-        # self.takeoff_header = ttk.Entry(self.inner_frame)
-        # self.takeoff_header.grid(row=0, column=2)
-        # self.takeoff_header.insert(END, 'Takeoff Country')
-        # self.takeoff_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-        #
-        # self.landing_header = ttk.Entry(self.inner_frame)
-        # self.landing_header.grid(row=0, column=3)
-        # self.landing_header.insert(END, 'Landing Country')
-        # self.landing_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-        #
-        # self.cost_header = ttk.Entry(self.inner_frame)
-        # self.cost_header.grid(row=0, column=4)
-        # self.cost_header.insert(END, 'Cost')
-        # self.cost_header.config(state=DISABLED, style='Header.TLabel', foreground='blue')
-        #
-        # self.airline_entry = ttk.Entry(self.inner_frame)
-        # self.flight_no_entry = ttk.Entry(self.inner_frame)
-        # self.takeoff_entry = ttk.Entry(self.inner_frame)
-        # self.landing_entry = ttk.Entry(self.inner_frame)
-        # self.cost_entry = ttk.Entry(self.inner_frame)
-        #
-        # #idk if these should be in diff order
-        #
-        # self.airline_entry_list = []
-        # self.flight_no_entry_list = []
-        # self.takeoff_entry_list = []
-        # self.landing_entry_list = []
-        # self.cost_entry_list = []
         columns = ('Airline', 'FN', 'Takeoff', 'Landing', 'Cost')
         self.treeview = ttk.Treeview(self.inner_frame, columns=columns, show="headings")
         self.treeview.pack()
@@ -406,6 +398,8 @@ class DestinationsMenu:
     def __init__(self, user, controller):
         self.destinations_menu = Toplevel()
         self.destinations_menu.title('Destinations Menu')
+        photo = tk.PhotoImage(file="/Users/jc/Desktop/A2.zip/icons/destinations_icon.png")
+        self.destinations_menu.iconphoto(True, photo)
         self.user = user
         self.dm_controller = controller
         self.destinations_menu.geometry("600x600")
@@ -474,7 +468,6 @@ class ViewAllDestinations:   #it doesn't auto update, need to fix that
 
     def fill_table(self):
         self.clear_treeview()
-        lst = self.lst
         data = []
         for d in self.lst:
             desti = (d.name, d.country)
@@ -641,6 +634,8 @@ class TripsMenu:
     def __init__(self, user, controller):
         self.trips_menu = Toplevel()
         self.trips_menu.title('Trips Menu')
+        photo = tk.PhotoImage(file="/Users/jc/Desktop/A2.zip/icons/trip_icon.png")
+        self.trips_menu.iconphoto(True, photo)
         self.trips_menu.geometry("600x600")
         self.tm_controller = controller
         frame1 = ttk.Frame(self.trips_menu)
