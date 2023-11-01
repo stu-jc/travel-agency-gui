@@ -21,6 +21,9 @@ class View:
         subheader_style = ttk.Style()
         subheader_style.configure('SubHeader.TLabel', foreground="#168FC1", font=('Helvetica', 15, 'bold'))
         ttk.Label(frame1, text='Login', style='Header.TLabel').pack(anchor='center', expand=True, fill=Y)
+        separator = ttk.Separator(self.root, orient="horizontal")
+        separator.pack(fill=X)
+
         button_style = ttk.Style()
         button_style.configure('B.TButton', font=('Arial Narrow', 11, 'bold'), relief='flat')
         button_style.map('B.TButton',
@@ -34,8 +37,8 @@ class View:
         label_style = ttk.Style()
         label_style.configure('L.TLabel', foreground='#168FC1', font=('Helvetica', 10, 'bold'))
         entry_style = ttk.Style()
-        entry_style.configure('E.TEntry', bordercolour="#E2F3FF", borderwidth=0)
-        frame1.config(relief='raised')
+        # , background = '#e2f3ff'
+        entry_style.configure('E.TEntry', background="#E2F3FF")
         # btn_style = ttk.Style()
         # btn_style.theme_use('default')
         # btn_style.theme_use('clam')
@@ -44,10 +47,10 @@ class View:
         frame2.pack(side=TOP, expand=True, fill=BOTH)
         frame2.config(border=True, borderwidth=20)
         ttk.Label(frame2, text='Username:', style='L.TLabel').grid(row=0, column=0)
-        self.login_tf = ttk.Entry(frame2, style='E.TEntry')
+        self.login_tf = ttk.Entry(frame2)
         self.login_tf.grid(row=0, column=1)
         ttk.Label(frame2, text='Password:', style='L.TLabel').grid(row=1, column=0)
-        self.pwd_tf = ttk.Entry(frame2, style='E.TEntry')
+        self.pwd_tf = ttk.Entry(frame2)
         self.pwd_tf.grid(row=1, column=1)
         frame3 = ttk.Frame(self.root)
         frame3.pack(side=BOTTOM, expand=True, fill=X, anchor='s')
@@ -396,20 +399,36 @@ class AddFlight:
         separator.pack(fill=X)
 
         frame3 = ttk.Frame(self.add_flights)
-        frame3.pack(fill=BOTH, pady=(15, 0), anchor='center')
+        frame3.pack(fill=BOTH, pady=(15, 0), expand=True, anchor='center')
+        # labels = ['Airline:', 'Flight Number:', 'Takeoff:', 'Landing:', 'Cost:']
+        # self.entries = []
+        #
+        # for i, label_text in enumerate(labels):
+        #     label = ttk.Label(frame3, text=label_text, foreground="#168FC1", font=('Helvetica', 15, 'bold'), anchor='center')
+        #     label.grid(row=i, column=0, sticky='nsew')
+        #     entry = ttk.Entry(frame3, style='E.TEntry')
+        #     entry.pack(anchor='center')
+        #     entry.grid(row=i, column=1, sticky='nsew')
+        #     self.entries.append(entry)
+        #
+        # # Configure grid to expand equally in all directions
+        # for i in range(2):  # 2 columns
+        #     frame3.grid_columnconfigure(i, weight=1)
+        # for i in range(len(labels)):  # Number of rows
+        #     frame3.grid_rowconfigure(i, weight=1)
         # frame3.pack_propagate(False)  # Prevent the frame from resizing based on content
+        # foreground = "#168FC1", font = ('Helvetica', 15, 'bold')
+        tk.Label(frame3, text='Airline:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=0, column=0, sticky='w')
+        ttk.Label(frame3, text='Flight Number:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=1, column=0, sticky='w')
+        ttk.Label(frame3, text='Takeoff:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=2, column=0, sticky='w')
+        ttk.Label(frame3, text='Landing:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=3, column=0, sticky='w')
+        ttk.Label(frame3, text='Cost:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=4, column=0, sticky='w')
 
-        ttk.Label(frame3, text='Airline:').grid(row=0, column=0)
-        ttk.Label(frame3, text='Flight Number:').grid(row=1, column=0)
-        ttk.Label(frame3, text='Takeoff:').grid(row=2, column=0)
-        ttk.Label(frame3, text='Landing:').grid(row=3, column=0)
-        ttk.Label(frame3, text='Cost:').grid(row=4, column=0)
-
-        self.airline_tf = ttk.Entry(frame3)
-        self.fn_tf = ttk.Entry(frame3)
-        self.takeoff_tf = ttk.Entry(frame3)
-        self.landing_tf = ttk.Entry(frame3)
-        self.cost_tf = ttk.Entry(frame3)
+        self.airline_tf = ttk.Entry(frame3, style='E.TEntry')
+        self.fn_tf = ttk.Entry(frame3, style='E.TEntry')
+        self.takeoff_tf = ttk.Entry(frame3, style='E.TEntry')
+        self.landing_tf = ttk.Entry(frame3, style='E.TEntry')
+        self.cost_tf = ttk.Entry(frame3, style='E.TEntry')
         self.airline_tf.grid(row=0, column=1)
         self.fn_tf.grid(row=1, column=1)
         self.takeoff_tf.grid(row=2, column=1)
@@ -423,11 +442,11 @@ class AddFlight:
         self.add_btn.config(state=DISABLED)
         ttk.Button(frame4, text='Close', command=self.add_flights.destroy).pack(side=LEFT, fill=BOTH, expand=True)
 
-        self.airline_tf.bind('<KeyRelease>', lambda e: self.set_btn())
-        self.fn_tf.bind('<KeyRelease>', lambda e: self.set_btn())
-        self.takeoff_tf.bind('<KeyRelease>', lambda e: self.set_btn())
-        self.landing_tf.bind('<KeyRelease>', lambda e: self.set_btn())
-        self.cost_tf.bind('<KeyRelease>', lambda e: self.set_btn())
+        # self.airline_tf.bind('<KeyRelease>', lambda e: self.set_btn())
+        # self.fn_tf.bind('<KeyRelease>', lambda e: self.set_btn())
+        # self.takeoff_tf.bind('<KeyRelease>', lambda e: self.set_btn())
+        # self.landing_tf.bind('<KeyRelease>', lambda e: self.set_btn())
+        # self.cost_tf.bind('<KeyRelease>', lambda e: self.set_btn())
 
     def add_the_flight(self):
         try:
