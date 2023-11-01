@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
+from tkmacosx import Button
 
 
 class View:
@@ -9,13 +10,13 @@ class View:
         #could add a thing to change the icon after close btn is pressed
         self.root = root
         self.root.title('Login')
-        # self.root.geometry("300x200")
+        # self.root.geometry("350x250")
         photo = tk.PhotoImage(file="/Users/jc/Desktop/A2.zip/icons/login_icon.png")
         self.root.iconphoto(True, photo)
         self.root.iconbitmap(bitmap='/Users/jc/Desktop/A2.zip/icon.icns') #not necessary
-        frame1 = ttk.Frame(self.root, width=200, height=150)
+        frame1 = ttk.Frame(self.root, width=300, height=650)
         frame1.pack(side=TOP, expand=True, fill=BOTH, anchor='n')
-        frame1.config(border=True, padding=(20, 30))
+        frame1.config(border=True, padding=(20, 20))
         header_style = ttk.Style()
         header_style.configure('Header.TLabel', foreground="#168FC1", font=('Helvetica', 18, 'bold'))
         subheader_style = ttk.Style()
@@ -25,15 +26,15 @@ class View:
         separator.pack(fill=X)
 
         button_style = ttk.Style()
-        button_style.configure('B.TButton', font=('Arial Narrow', 11, 'bold'), relief='flat')
-        button_style.map('B.TButton',
-                         # foreground=[('active', 'white'), ('disabled', 'white')],
-                         # background=[('active', 'red'), ('disabled', 'blue'), ('pressed', 'green')],
-                         bordercolour=[('active', 'red'), ('disabled', 'blue')]
-                        )
+        # button_style.configure('B.TButton', font=('Arial Narrow', 11, 'bold'), relief='flat')
+        # button_style.map('B.TButton',
+        #                  # foreground=[('active', 'white'), ('disabled', 'white')],
+        #                  # background=[('active', 'red'), ('disabled', 'blue'), ('pressed', 'green')],
+        #                  bordercolour=[('active', 'red'), ('disabled', 'blue')]
+        #                 )
         # event binding for hover on buttons
         frame_style = ttk.Style()
-        frame_style.configure("F.TFrame", border=True, borderwidth=10, bordercolour='black', padding=(20, 20))
+        # frame_style.configure("F.TFrame", border=True, borderwidth=10, bordercolour='black', padding=(20, 20))
         label_style = ttk.Style()
         label_style.configure('L.TLabel', foreground='#168FC1', font=('Helvetica', 10, 'bold'))
         entry_style = ttk.Style()
@@ -54,12 +55,10 @@ class View:
         self.pwd_tf.grid(row=1, column=1)
         frame3 = ttk.Frame(self.root)
         frame3.pack(side=BOTTOM, expand=True, fill=X, anchor='s')
-        frame3.configure(border=0)
         # self.login_btn = ttk.Button(frame3, text='Login', command=self.login_cmd, style='B.TButton')
-        self.login_btn = tk.Button(frame3, text='Login', command=self.login_cmd, highlightbackground='#168FC1',
-                                   foreground='white')
+        self.login_btn = Button(frame3, text='Login', command=self.login_cmd, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat')
         self.login_btn.pack(side=tk.LEFT, fill=X, expand=True)
-        ttk.Button(frame3, text='Exit', style='B.TButton', command=root.destroy).pack(side=tk.RIGHT, fill=X, expand=True)
+        Button(frame3, text='Exit', bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat', command=root.destroy).pack(side=tk.RIGHT, fill=X, expand=True)
         self.controller = None
         self.login_btn.config(state=DISABLED)
         self.pwd_tf.bind('<Return>', lambda e: self.login_cmd())
@@ -99,7 +98,7 @@ class AgencyWindow:
         image_path = "/Users/jc/Desktop/A2.zip/images/agency.png"
         original_image = Image.open(image_path)
         tk_image = ImageTk.PhotoImage(original_image)
-        label = tk.Label(frame1, image=tk_image)
+        label = tk.Label(frame1, image=tk_image, width=1200, height=400)
         label.pack()
         label.image = tk_image
 
@@ -113,10 +112,10 @@ class AgencyWindow:
         separator.pack(fill=X)
         frame3 = ttk.Frame(self.agency_window)
         frame3.pack(side=BOTTOM, expand=True, pady=(15,0), fill=X)
-        ttk.Button(frame3, text='Explore Flights', command=self.exp_flights).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='Explore Destinations', command=self.exp_destinations).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='Book a Trip', command=self.book_trip).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='Exit', command=exit).pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='Explore Flights', command=self.exp_flights, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='Explore Destinations', command=self.exp_destinations, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='Book a Trip', command=self.book_trip, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='Exit', command=exit, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
 
     def exp_flights(self):
         FlightsMenu(self.user, self.agency_controller)
@@ -158,7 +157,7 @@ class ErrorWindow:
         self.msg_label.pack()
         frame4 = ttk.Frame(self.error_window)
         frame4.pack(side=BOTTOM, expand=True, padx=10, pady=10,fill=X)
-        ttk.Button(frame4, text='Close', command=self.error_window.destroy, ).pack(expand=True, fill=X, side=BOTTOM)
+        Button(frame4, text='Close', command=self.error_window.destroy, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(expand=True, fill=X, side=BOTTOM)
 
 
 class FlightsMenu:
@@ -175,7 +174,7 @@ class FlightsMenu:
         image_path = "/Users/jc/Desktop/A2.zip/images/flight.png"
         original_image = Image.open(image_path)
         tk_image = ImageTk.PhotoImage(original_image)
-        label = tk.Label(frame1, image=tk_image)
+        label = tk.Label(frame1, image=tk_image, width=1200, height=400)
         label.pack()
         label.image = tk_image
 
@@ -190,11 +189,11 @@ class FlightsMenu:
         frame3 = ttk.Frame(self.flights_window)
         frame3.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=(15,0))
         btn_width = 9
-        ttk.Button(frame3, text='View All Flights', command=lambda: self.view_all_flights(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='View Flights by Country', command=lambda: self.view_filtered_flights(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='Add Flight', command=lambda: self.add_flight(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='Remove Flight', command=lambda: self.remove_flight(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='Close', command=self.flights_window.destroy, width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='View All Flights', command=lambda: self.view_all_flights(), width=btn_width, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='View Flights by Country', command=lambda: self.view_filtered_flights(), width=btn_width, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='Add Flight', command=lambda: self.add_flight(), width=btn_width, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='Remove Flight', command=lambda: self.remove_flight(), width=btn_width, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='Close', command=self.flights_window.destroy, width=btn_width, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
 
     def view_all_flights(self):
         ViewAllFlights(self.fm_controller)
@@ -257,8 +256,8 @@ class ViewAllFlights:
         self.treeview.heading(column=4, text='Cost')
 
         frame4 = ttk.Frame(self.view_all_flights)
-        frame4.pack(side=BOTTOM, fill=X, expand=True)
-        ttk.Button(frame4, text='Close', command=self.view_all_flights.destroy).pack(side=BOTTOM, fill=X, expand=True)
+        frame4.pack(side=BOTTOM, fill=X, expand=True, pady=(15,0))
+        Button(frame4, text='Close', command=self.view_all_flights.destroy, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=BOTTOM, fill=X, expand=True)
         self.fill_table()
         self.view_all_flights.bind('<Return>', lambda e: self.fill_table())
         self.view_all_flights.bind('<Button-1>', lambda e: self.fill_table())
@@ -343,8 +342,8 @@ class ViewFilteredFlights:
         self.treeview.heading(column=4, text='Cost')
 
         frame4 = ttk.Frame(self.view_ff)
-        frame4.pack(fill=X, expand=True)
-        ttk.Button(frame4, text='Close', command=self.view_ff.destroy).pack(side=tk.RIGHT, fill=BOTH, expand=True)
+        frame4.pack(fill=X, expand=True, pady=(15,0))
+        Button(frame4, text='Close', command=self.view_ff.destroy, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.RIGHT, fill=BOTH, expand=True)
         self.fill_table()
         self.input_entry.bind('<KeyRelease>', lambda e: self.filtered_table())
         self.inner_frame.update_idletasks()
@@ -471,10 +470,10 @@ class AddFlight:
 
         frame4 = ttk.Frame(self.add_flights)
         frame4.pack(side=BOTTOM, fill=BOTH, expand=True, pady=(15,0))
-        self.add_btn = ttk.Button(frame4, text='Add Flight', command=self.add_the_flight)
+        self.add_btn = Button(frame4, text='Add Flight', command=self.add_the_flight, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat')
         self.add_btn.pack(side=LEFT, fill=BOTH, expand=True)
         self.add_btn.config(state=DISABLED)
-        ttk.Button(frame4, text='Close', command=self.add_flights.destroy).pack(side=LEFT, fill=BOTH, expand=True)
+        Button(frame4, text='Close', command=self.add_flights.destroy, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=LEFT, fill=BOTH, expand=True)
 
         self.airline_tf.bind('<KeyRelease>', lambda e: self.set_btn())
         self.fn_tf.bind('<KeyRelease>', lambda e: self.set_btn())
@@ -537,10 +536,10 @@ class RemoveFlight:
 
         frame4 = ttk.Frame(self.remove_flight)
         frame4.pack(side=BOTTOM, fill=BOTH, expand=True)
-        self.remove_btn = ttk.Button(frame4, text='Remove Flight', command=self.remove_the_flight)
+        self.remove_btn = Button(frame4, text='Remove Flight', command=self.remove_the_flight, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat')
         self.remove_btn.pack(side=tk.LEFT, fill=BOTH, expand=True)
         self.remove_btn.config(state=DISABLED)
-        ttk.Button(frame4, text='Close', command=self.remove_flight.destroy).pack(side=tk.LEFT, fill=BOTH, expand=True)
+        Button(frame4, text='Close', command=self.remove_flight.destroy, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, fill=BOTH, expand=True)
 
         self.take_tf.bind('<KeyRelease>', lambda e: self.set_btn())
         self.land_tf.bind('<KeyRelease>', lambda e: self.set_btn())
@@ -573,7 +572,7 @@ class DestinationsMenu:
         image_path = "/Users/jc/Desktop/A2.zip/images/destination.png"
         original_image = Image.open(image_path)
         tk_image = ImageTk.PhotoImage(original_image)
-        label = tk.Label(frame1, image=tk_image)
+        label = tk.Label(frame1, image=tk_image, width=1200, height=400)
         label.pack()
         label.image = tk_image
 
@@ -588,11 +587,11 @@ class DestinationsMenu:
         frame3 = ttk.Frame(self.destinations_menu)
         frame3.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=(15,0))
         btn_width = 9
-        ttk.Button(frame3, text='View All Destinations', command=lambda: self.view_destinations(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='View Destinations by Country', command=lambda: self.view_filtered_destinations(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='Add Destinations', command=lambda: self.add_destinations(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='Remove Destinations', command=lambda: self.remove_destinations(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='Close', command=self.destinations_menu.destroy, width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='View All Destinations', command=lambda: self.view_destinations(), width=btn_width, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='View Destinations by Country', command=lambda: self.view_filtered_destinations(), width=btn_width, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='Add Destinations', command=lambda: self.add_destinations(), width=btn_width, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='Remove Destinations', command=lambda: self.remove_destinations(), width=btn_width, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='Close', command=self.destinations_menu.destroy, width=btn_width, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
 
     def view_destinations(self):
         ViewAllDestinations(self.dm_controller)
@@ -618,7 +617,7 @@ class ViewAllDestinations:   #it doesn't auto update, need to fix that
         image_path = "/Users/jc/Desktop/A2.zip/images/destination.png"
         original_image = Image.open(image_path)
         tk_image = ImageTk.PhotoImage(original_image)
-        label = tk.Label(frame1, image=tk_image, width=1000, height=300)
+        label = tk.Label(frame1, image=tk_image, width=1000, height=200)
         label.pack()
         label.image = tk_image
 
@@ -643,7 +642,7 @@ class ViewAllDestinations:   #it doesn't auto update, need to fix that
         self.t.heading(column=1, text='Country')
         frame4 = ttk.Frame(self.view_all_destinations)
         frame4.pack(side=BOTTOM, fill=X, expand=True)
-        ttk.Button(frame4, text='Close', command=self.view_all_destinations.destroy).pack(side=tk.RIGHT, fill=BOTH, expand=True)
+        Button(frame4, text='Close', command=self.view_all_destinations.destroy, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.RIGHT, fill=BOTH, expand=True)
         self.lst = self.vad_controller.model.agency.destinations.destinations
         # self.lst_var = tk.IntVar()
         # self.lst_var.set(len(self.lst))
@@ -688,7 +687,7 @@ class ViewFilteredDestinations:
         image_path = "/Users/jc/Desktop/A2.zip/images/destination.png"
         original_image = Image.open(image_path)
         tk_image = ImageTk.PhotoImage(original_image)
-        label = tk.Label(frame1, image=tk_image, width=1000, height=300)
+        label = tk.Label(frame1, image=tk_image, width=1000, height=200)
         label.pack(pady=(0,15))
         label.image = tk_image
 
@@ -721,7 +720,7 @@ class ViewFilteredDestinations:
 
         frame4 = ttk.Frame(self.view_filtered_d)
         frame4.pack(fill=X, expand=True)
-        ttk.Button(frame4, text='Close', command=self.view_filtered_d.destroy).pack(side=tk.RIGHT, fill=BOTH, expand=True)
+        Button(frame4, text='Close', command=self.view_filtered_d.destroy, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.RIGHT, fill=BOTH, expand=True)
         self.fill_table()
         self.input_entry.bind('<KeyRelease>', lambda e: self.filtered_table())
 
@@ -815,10 +814,10 @@ class AddDestination:
 
         frame4 = ttk.Frame(self.add_destination)
         frame4.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        self.add_d_btn = ttk.Button(frame4, text='Add Destination', command=self.add_the_destination)
+        self.add_d_btn = Button(frame4, text='Add Destination', command=self.add_the_destination, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat')
         self.add_d_btn.pack(side=tk.LEFT, fill=BOTH, expand=True)
         self.add_d_btn.config(state=DISABLED)
-        ttk.Button(frame4, text='Close', command=self.add_destination.destroy).pack(side=tk.RIGHT, fill=BOTH, expand=True)
+        Button(frame4, text='Close', command=self.add_destination.destroy, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.RIGHT, fill=BOTH, expand=True)
 
         self.name_tf.bind('<KeyRelease>', lambda e: self.set_btn())
         self.country_tf.bind('<KeyRelease>', lambda e: self.set_btn())
@@ -880,10 +879,10 @@ class RemoveDestination:
 
         frame4 = ttk.Frame(self.remove_destination)
         frame4.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        self.add_d_btn = ttk.Button(frame4, text='Remove Destination', command=self.remove_the_destination)
+        self.add_d_btn = Button(frame4, text='Remove Destination', command=self.remove_the_destination, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat')
         self.add_d_btn.pack(side=tk.LEFT, fill=BOTH, expand=True)
         self.add_d_btn.config(state=DISABLED)
-        ttk.Button(frame4, text='Close', command=self.remove_destination.destroy).pack(side=tk.RIGHT, fill=BOTH, expand=True)
+        Button(frame4, text='Close', command=self.remove_destination.destroy, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.RIGHT, fill=BOTH, expand=True)
 
         self.name_tf.bind('<KeyRelease>', lambda e: self.set_btn())
         self.country_tf.bind('<KeyRelease>', lambda e: self.set_btn())
@@ -915,7 +914,7 @@ class TripsMenu:
         image_path = "/Users/jc/Desktop/A2.zip/images/trip.png"
         original_image = Image.open(image_path)
         tk_image = ImageTk.PhotoImage(original_image)
-        label = tk.Label(frame1, image=tk_image)
+        label = tk.Label(frame1, image=tk_image, width=1200, height=400)
         label.pack()
         label.image = tk_image
         separator = ttk.Separator(self.trips_menu, orient="horizontal")
@@ -930,11 +929,11 @@ class TripsMenu:
         frame3 = ttk.Frame(self.trips_menu)
         frame3.pack(side=BOTTOM, fill=X, expand=True, pady=(15,0))
         btn_width = 9
-        ttk.Button(frame3, text='Add Destination', command=self.add_destination, width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='Remove Destination', command=self.remove_destination, width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='Add Connecting Flights', command=self.add_connecting_flights, width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='View Trip', command=self.view_trip, width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
-        ttk.Button(frame3, text='Close', command=self.trips_menu.destroy, width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='Add Destination', command=self.add_destination, width=btn_width, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='Remove Destination', command=self.remove_destination, width=btn_width, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='Add Connecting Flights', command=self.add_connecting_flights, width=btn_width, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='View Trip', command=self.view_trip, width=btn_width, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
+        Button(frame3, text='Close', command=self.trips_menu.destroy, width=btn_width, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.LEFT, expand=True, fill=X)
 
         # self.destinations_menu.title('Destinations Menu')
         # photo = tk.PhotoImage(file="/Users/jc/Desktop/A2.zip/icons/destinations_icon.png")
@@ -1034,10 +1033,10 @@ class AddTripDestination:
 
         frame4 = ttk.Frame(self.add_trip_d)
         frame4.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        self.add_d_btn = ttk.Button(frame4, text='Add Destination', command=self.add_the_destination)
+        self.add_d_btn = Button(frame4, text='Add Destination', command=self.add_the_destination, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat')
         self.add_d_btn.pack(side=tk.LEFT, fill=BOTH, expand=True)
         self.add_d_btn.config(state=DISABLED)
-        ttk.Button(frame4, text='Close', command=self.add_trip_d.destroy).pack(side=tk.RIGHT, fill=BOTH, expand=True)
+        Button(frame4, text='Close', command=self.add_trip_d.destroy, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.RIGHT, fill=BOTH, expand=True)
 
         self.name_tf.bind('<KeyRelease>', lambda e: self.set_btn())
         self.country_tf.bind('<KeyRelease>', lambda e: self.set_btn())
@@ -1103,10 +1102,10 @@ class RemoveTripDestination:
 
         frame4 = ttk.Frame(self.remove_trip_d)
         frame4.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        self.add_d_btn = ttk.Button(frame4, text='Remove Destination', command=self.remove_the_destination)
+        self.add_d_btn = Button(frame4, text='Remove Destination', command=self.remove_the_destination, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat')
         self.add_d_btn.pack(side=tk.LEFT, fill=BOTH, expand=True)
         self.add_d_btn.config(state=DISABLED)
-        ttk.Button(frame4, text='Close', command=self.remove_trip_d.destroy).pack(side=tk.RIGHT, fill=BOTH, expand=True)
+        Button(frame4, text='Close', command=self.remove_trip_d.destroy, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.RIGHT, fill=BOTH, expand=True)
 
         self.name_tf.bind('<KeyRelease>', lambda e: self.set_btn())
         self.country_tf.bind('<KeyRelease>', lambda e: self.set_btn())
@@ -1155,8 +1154,8 @@ class ViewTrip:
 
         frame4 = ttk.Frame(self.view_trip)
         frame4.pack(side=BOTTOM, fill=X, expand=True)
-        ttk.Button(frame4, text='Close', command=self.view_trip.destroy).pack(side=tk.RIGHT, fill=X, expand=True)
-        self.view_ind_btn = ttk.Button(frame4, text='View Individual', command=self.view_individual)
+        Button(frame4, text='Close', command=self.view_trip.destroy, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat').pack(side=tk.RIGHT, fill=X, expand=True)
+        self.view_ind_btn = Button(frame4, text='View Individual', command=self.view_individual, bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat')
         self.view_ind_btn.pack(side=tk.LEFT, fill=X, expand=True)
         self.view_ind_btn.config(state=DISABLED)
 
