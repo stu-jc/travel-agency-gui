@@ -398,8 +398,18 @@ class AddFlight:
         separator = ttk.Separator(self.add_flights, orient="horizontal")
         separator.pack(fill=X)
 
-        frame3 = ttk.Frame(self.add_flights)
+        # window_width = self.add_flights.winfo_reqwidth()
+        # window_height = self.add_flights.winfo_reqheight()
+        # frame_width = 1000  # Set the width of frame3
+        # frame_height = 300  # Set the height of frame3
+        # x_position = (window_width - frame_width) // 2
+        # y_position = (window_height - frame_height) // 2
+        # print(x_position, y_position)
+        frame3 = tk.Frame(self.add_flights)
+        # frame3.place(x=500, y=350, anchor='center')
+        # frame3.place(anchor='center')
         frame3.pack(fill=BOTH, pady=(15, 0), expand=True, anchor='center')
+
         # labels = ['Airline:', 'Flight Number:', 'Takeoff:', 'Landing:', 'Cost:']
         # self.entries = []
         #
@@ -418,22 +428,26 @@ class AddFlight:
         #     frame3.grid_rowconfigure(i, weight=1)
         # frame3.pack_propagate(False)  # Prevent the frame from resizing based on content
         # foreground = "#168FC1", font = ('Helvetica', 15, 'bold')
-        tk.Label(frame3, text='Airline:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=0, column=0, sticky='w')
-        ttk.Label(frame3, text='Flight Number:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=1, column=0, sticky='w')
-        ttk.Label(frame3, text='Takeoff:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=2, column=0, sticky='w')
-        ttk.Label(frame3, text='Landing:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=3, column=0, sticky='w')
-        ttk.Label(frame3, text='Cost:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=4, column=0, sticky='w')
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0, column=0,columnspan=4)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,column=1)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,column=2)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0, column=3)
+        tk.Label(frame3, text='Airline:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=0, column=5, sticky='w')
+        ttk.Label(frame3, text='Flight Number:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=1, column=5, sticky='w')
+        ttk.Label(frame3, text='Takeoff:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=2, column=5, sticky='w')
+        ttk.Label(frame3, text='Landing:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=3, column=5, sticky='w')
+        ttk.Label(frame3, text='Cost:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=4, column=5, sticky='w')
 
         self.airline_tf = ttk.Entry(frame3, style='E.TEntry')
         self.fn_tf = ttk.Entry(frame3, style='E.TEntry')
         self.takeoff_tf = ttk.Entry(frame3, style='E.TEntry')
         self.landing_tf = ttk.Entry(frame3, style='E.TEntry')
         self.cost_tf = ttk.Entry(frame3, style='E.TEntry')
-        self.airline_tf.grid(row=0, column=1)
-        self.fn_tf.grid(row=1, column=1)
-        self.takeoff_tf.grid(row=2, column=1)
-        self.landing_tf.grid(row=3, column=1)
-        self.cost_tf.grid(row=4, column=1)
+        self.airline_tf.grid(row=0, column=6)
+        self.fn_tf.grid(row=1, column=6)
+        self.takeoff_tf.grid(row=2, column=6)
+        self.landing_tf.grid(row=3, column=6)
+        self.cost_tf.grid(row=4, column=6)
 
         frame4 = ttk.Frame(self.add_flights)
         frame4.pack(side=BOTTOM, fill=BOTH, expand=True)
@@ -442,11 +456,11 @@ class AddFlight:
         self.add_btn.config(state=DISABLED)
         ttk.Button(frame4, text='Close', command=self.add_flights.destroy).pack(side=LEFT, fill=BOTH, expand=True)
 
-        # self.airline_tf.bind('<KeyRelease>', lambda e: self.set_btn())
-        # self.fn_tf.bind('<KeyRelease>', lambda e: self.set_btn())
-        # self.takeoff_tf.bind('<KeyRelease>', lambda e: self.set_btn())
-        # self.landing_tf.bind('<KeyRelease>', lambda e: self.set_btn())
-        # self.cost_tf.bind('<KeyRelease>', lambda e: self.set_btn())
+        self.airline_tf.bind('<KeyRelease>', lambda e: self.set_btn())
+        self.fn_tf.bind('<KeyRelease>', lambda e: self.set_btn())
+        self.takeoff_tf.bind('<KeyRelease>', lambda e: self.set_btn())
+        self.landing_tf.bind('<KeyRelease>', lambda e: self.set_btn())
+        self.cost_tf.bind('<KeyRelease>', lambda e: self.set_btn())
 
     def add_the_flight(self):
         try:
@@ -468,30 +482,43 @@ class RemoveFlight:
         self.remove_flight = Toplevel()
 
         self.remove_flight.title('Remove Flight')
-        self.remove_flight.geometry("600x600")
         frame1 = ttk.Frame(self.remove_flight)
         frame1.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        # picture goes here
+        frame1.pack(pady=(0, 15))
+        image_path = "/Users/jc/Desktop/A2.zip/images/flight.png"
+        original_image = Image.open(image_path)
+        tk_image = ImageTk.PhotoImage(original_image)
+        label = tk.Label(frame1, image=tk_image, width=1000, height=200)
+        label.pack()
+        label.image = tk_image
 
+        separator = ttk.Separator(self.remove_flight, orient="horizontal")
+        separator.pack(fill=X)
         frame2 = ttk.Frame(self.remove_flight)
         frame2.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        ttk.Label(frame2, text='Remove a Flight', style='Header.TLabel').pack()
+        ttk.Label(frame2, text='Remove a Flight', style='Header.TLabel').pack(pady=20)
+        separator = ttk.Separator(self.remove_flight, orient="horizontal")
+        separator.pack(fill=X)
 
         frame3 = ttk.Frame(self.remove_flight)
-        frame3.pack(side=tk.TOP, fill=tk.BOTH)
-        ttk.Label(frame3, text='Takeoff:').grid(row=0, column=0)
-        ttk.Label(frame3, text='Landing:').grid(row=1, column=0)
+        frame3.pack(side=TOP, fill=BOTH, pady=20)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0, column=0, columnspan=4)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0, column=1)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0, column=2)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0, column=3)
+        ttk.Label(frame3, text='Takeoff:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=0, column=5, sticky='w')
+        ttk.Label(frame3, text='Landing:', foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=1, column=5, sticky='w')
         self.take_tf = ttk.Entry(frame3)
         self.land_tf = ttk.Entry(frame3)
-        self.take_tf.grid(row=0, column=1)
-        self.land_tf.grid(row=1, column=1)
+        self.take_tf.grid(row=0, column=6)
+        self.land_tf.grid(row=1, column=6)
 
         frame4 = ttk.Frame(self.remove_flight)
-        frame4.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        frame4.pack(side=BOTTOM, fill=BOTH, expand=True)
         self.remove_btn = ttk.Button(frame4, text='Remove Flight', command=self.remove_the_flight)
         self.remove_btn.pack(side=tk.LEFT, fill=BOTH, expand=True)
         self.remove_btn.config(state=DISABLED)
-        ttk.Button(frame4, text='Close', command=self.remove_flight.destroy).pack(side=tk.RIGHT, fill=BOTH, expand=True)
+        ttk.Button(frame4, text='Close', command=self.remove_flight.destroy).pack(side=tk.LEFT, fill=BOTH, expand=True)
 
         self.take_tf.bind('<KeyRelease>', lambda e: self.set_btn())
         self.land_tf.bind('<KeyRelease>', lambda e: self.set_btn())
@@ -773,23 +800,41 @@ class RemoveDestination:
         self.remove_destination = Toplevel()
 
         self.remove_destination.title('Remove Destination')
-        self.remove_destination.geometry("600x600")
         frame1 = ttk.Frame(self.remove_destination)
         frame1.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        # picture goes here
+        frame1.pack(pady=(0, 15))
+        image_path = "/Users/jc/Desktop/A2.zip/images/destination.png"
+        original_image = Image.open(image_path)
+        tk_image = ImageTk.PhotoImage(original_image)
+        label = tk.Label(frame1, image=tk_image, width=1000, height=200)
+        label.pack()
+        label.image = tk_image
 
+        separator = ttk.Separator(self.remove_destination, orient="horizontal")
+        separator.pack(fill=X)
         frame2 = ttk.Frame(self.remove_destination)
         frame2.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        ttk.Label(frame2, text='Remove a Destination', style='Header.TLabel').pack()
+        ttk.Label(frame2, text='Remove a Destination', style='Header.TLabel').pack(pady=20)
+        separator = ttk.Separator(self.remove_destination, orient="horizontal")
+        separator.pack(fill=X)
 
         frame3 = ttk.Frame(self.remove_destination)
         frame3.pack(side=tk.TOP, fill=tk.BOTH)
-        ttk.Label(frame3, text='Name:').grid(row=0, column=0)
-        ttk.Label(frame3, text='Country:').grid(row=1, column=0)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=0,
+                                                                                                              columnspan=4)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=1)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=2)
+        ttk.Label(frame3, text='                              ', foreground='white', background='white').grid(row=0,
+                                                                                                              column=3)
+        ttk.Label(frame3, text='Name:', padding=(0,10), foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=0, column=5, sticky='w')
+        ttk.Label(frame3, text='Country:', padding=(0,10), foreground="#168FC1", font=('Helvetica', 15, 'bold'),justify='left', anchor='w').grid(row=1, column=5, sticky='w')
         self.name_tf = ttk.Entry(frame3)
         self.country_tf = ttk.Entry(frame3)
-        self.name_tf.grid(row=0, column=1)
-        self.country_tf.grid(row=1, column=1)
+        self.name_tf.grid(row=0, column=6)
+        self.country_tf.grid(row=1, column=6)
 
         frame4 = ttk.Frame(self.remove_destination)
         frame4.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
