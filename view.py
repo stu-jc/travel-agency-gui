@@ -17,7 +17,9 @@ class View:
         frame1.pack(side=TOP, expand=True, fill=BOTH, anchor='n')
         frame1.config(border=True, padding=(20, 30))
         header_style = ttk.Style()
-        header_style.configure('Header.TLabel', foreground="#168FC1", font=('Helvetica', 12, 'bold'))
+        header_style.configure('Header.TLabel', foreground="#168FC1", font=('Helvetica', 18, 'bold'))
+        subheader_style = ttk.Style()
+        subheader_style.configure('SubHeader.TLabel', foreground="#168FC1", font=('Helvetica', 15, 'bold'))
         ttk.Label(frame1, text='Login', style='Header.TLabel').pack(anchor='center', expand=True, fill=Y)
         button_style = ttk.Style()
         button_style.configure('B.TButton', font=('Arial Narrow', 11, 'bold'), relief='flat')
@@ -212,9 +214,9 @@ class ViewAllFlights:
         outer_frame.pack(side=TOP, expand=True, fill=BOTH, pady=(15,0))
         canvas = tk.Canvas(outer_frame)
         canvas.pack(fill=BOTH, expand=True)
-        scrollbar = ttk.Scrollbar(outer_frame,orient='vertical', command=canvas.yview)
-        scrollbar.pack(side=RIGHT, fill=Y)
-        canvas.configure(yscrollcommand=scrollbar.set)
+        # scrollbar = ttk.Scrollbar(outer_frame,orient='vertical', command=canvas.yview)
+        # scrollbar.pack(side=RIGHT, fill=Y)
+        # canvas.configure(yscrollcommand=scrollbar.set)
         # self.inner_frame = ttk.Frame(canvas, width=1000, height=400)
         self.inner_frame = tk.Frame(canvas)
         self.inner_frame.pack(fill=BOTH, expand=True)
@@ -231,7 +233,6 @@ class ViewAllFlights:
         self.treeview.heading(column=2, text='Takeoff')
         self.treeview.heading(column=3, text='Landing')
         self.treeview.heading(column=4, text='Cost')
-
 
         frame4 = ttk.Frame(self.view_all_flights)
         frame4.pack(side=BOTTOM, fill=X, expand=True)
@@ -268,29 +269,47 @@ class ViewAllFlights:
 
 class ViewFilteredFlights:
     def __init__(self, controller):
-        self.view_ff = Toplevel(width=600, height=600)
+        self.view_ff = Toplevel()
+        # self.view_ff = Toplevel(width=600, height=600)
         self.v_ff_controller = controller
 
         self.view_ff.title('View Flights by Country')
-        frame1 = ttk.Frame(self.view_ff)
-        frame1.pack()
+        frame1 = tk.Frame(self.view_ff)
+        frame1.pack(pady=(0, 15))
+        image_path = "/Users/jc/Desktop/A2.zip/images/flight.png"
+        original_image = Image.open(image_path)
+        tk_image = ImageTk.PhotoImage(original_image)
+        label = tk.Label(frame1, image=tk_image, width=1000, height=200)
+        label.pack()
+        label.image = tk_image
+        separator = ttk.Separator(self.view_ff, orient="horizontal")
+        separator.pack(fill=X)
         frame2 = ttk.Frame(self.view_ff)
-        frame2.pack(side=TOP, fill=BOTH, expand=True)
-        ttk.Label(frame2, text='Flights', foreground='blue', width=20, font=('Arial', 16, 'bold')).pack()
-        self.input_entry = ttk.Entry(frame2)
+        frame2.pack(side=TOP, fill=BOTH, expand=True, pady=25)
+        ttk.Label(frame2, text='Filtered Flights', style='Header.TLabel').pack()
+        separator = ttk.Separator(self.view_ff, orient="horizontal")
+        separator.pack(fill=X)
+
+        frame3 = ttk.Frame(self.view_ff)
+        frame3.pack(side=TOP, fill=BOTH, expand=True, pady=(20, 0))
+        ttk.Label(frame3, text='Country', style='SubHeader.TLabel').pack()
+        self.input_entry = ttk.Entry(frame3)
         self.input_entry.pack(side=tk.RIGHT, fill=X, expand=True)
 
-        outer_frame = ttk.Frame(self.view_ff, width=600, height=300)
-        outer_frame.pack(side=TOP, expand=1)
-        canvas = tk.Canvas(outer_frame, width=1000, height=300)
-        canvas.pack(side=LEFT, fill=BOTH, expand=1)
-        scrollbar = ttk.Scrollbar(outer_frame, orient='vertical', command=canvas.yview)
-        scrollbar.pack(side=RIGHT, fill=Y)
-        canvas.configure(yscrollcommand=scrollbar.set)
-        self.inner_frame = ttk.Frame(canvas, width=1000, height=300)
-        self.inner_frame.pack()
+        outer_frame = ttk.Frame(self.view_ff)
+        outer_frame.pack(expand=True, fill=BOTH)
+        canvas = tk.Canvas(outer_frame)
+        canvas.pack(expand=True, fill=BOTH)
+        # scrollbar = ttk.Scrollbar(outer_frame, orient='vertical', command=canvas.yview)
+        # scrollbar.pack(side=RIGHT, fill=Y)
+        # canvas.configure(yscrollcommand=scrollbar.set)
+        self.inner_frame = ttk.Frame(canvas)
+        self.inner_frame.pack(expand=True, fill=BOTH)
         canvas.create_window((0, 0), window=self.inner_frame, anchor='nw')
 
+        treev_style = ttk.Style()
+        treev_style.configure('Treeview.Heading', foreground="#168FC1", background='lightgrey',
+                              font=('Arial', 16, 'bold'))
         columns = ('Airline', 'FN', 'Takeoff', 'Landing', 'Cost')
         self.treeview = ttk.Treeview(self.inner_frame, columns=columns, show="headings")
         self.treeview.pack()
@@ -321,8 +340,16 @@ class ViewFilteredFlights:
             flight = (f.airline, f.flight_no, f.takeoff, f.landing, f.cost)
             data.append(flight)
 
-        for a, fn, t, l, c in data:
-            self.treeview.insert('', 'end', values=(a, fn, t, l, c))
+        for index, (a, fn, t, l, c) in enumerate(data):
+            num = index + 1
+            if num % 2 != 0:
+                self.treeview.insert('', 'end', values=(a, fn, t, l, c), tags=('oddrow',))
+            else:
+                self.treeview.insert('', 'end', values=(a, fn, t, l, c), tags=('evenrow',))
+
+            self.treeview.tag_configure('evenrow', background='#e1e2e3', font=("Arial", 12))
+            self.treeview.tag_configure('oddrow', font=("Arial", 12))
+
 
     def filtered_table(self):
         self.clear_treeview()
@@ -335,27 +362,43 @@ class ViewFilteredFlights:
                 flight = (f.airline, f.flight_no, f.takeoff, f.landing, f.cost)
                 data.append(flight)
 
-            for a, fn, t, l, c in data:
-                self.treeview.insert('', 'end', values=(a, fn, t, l, c))
+            for index, (a, fn, t, l, c) in enumerate(data):
+                num = index + 1
+                if num % 2 != 0:
+                    self.treeview.insert('', 'end', values=(a, fn, t, l, c), tags=('oddrow',))
+                else:
+                    self.treeview.insert('', 'end', values=(a, fn, t, l, c), tags=('evenrow',))
+
+                self.treeview.tag_configure('evenrow', background='#e1e2e3', font=("Arial", 12))
+                self.treeview.tag_configure('oddrow', font=("Arial", 12))
 
 
 class AddFlight:
     def __init__(self, controller):
         self.af_controller = controller
         self.add_flights = Toplevel()
-
         self.add_flights.title('Add Flights')
-        self.add_flights.geometry("600x600")
         frame1 = ttk.Frame(self.add_flights)
-        frame1.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        # picture goes here
+        frame1.pack(pady=(0, 15))
+        image_path = "/Users/jc/Desktop/A2.zip/images/flight.png"
+        original_image = Image.open(image_path)
+        tk_image = ImageTk.PhotoImage(original_image)
+        label = tk.Label(frame1, image=tk_image, width=1000, height=200)
+        label.pack()
+        label.image = tk_image
 
+        separator = ttk.Separator(self.add_flights, orient="horizontal")
+        separator.pack(fill=X)
         frame2 = ttk.Frame(self.add_flights)
         frame2.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        ttk.Label(frame2, text='Add a Flight', style='Header.TLabel').pack()
+        ttk.Label(frame2, text='Add a Flight', style='Header.TLabel').pack(pady=20)
+        separator = ttk.Separator(self.add_flights, orient="horizontal")
+        separator.pack(fill=X)
 
         frame3 = ttk.Frame(self.add_flights)
-        frame3.pack(side=tk.TOP, fill=tk.BOTH)
+        frame3.pack(fill=BOTH, pady=(15, 0), anchor='center')
+        # frame3.pack_propagate(False)  # Prevent the frame from resizing based on content
+
         ttk.Label(frame3, text='Airline:').grid(row=0, column=0)
         ttk.Label(frame3, text='Flight Number:').grid(row=1, column=0)
         ttk.Label(frame3, text='Takeoff:').grid(row=2, column=0)
@@ -374,12 +417,16 @@ class AddFlight:
         self.cost_tf.grid(row=4, column=1)
 
         frame4 = ttk.Frame(self.add_flights)
-        frame4.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        frame4.pack(side=BOTTOM, fill=BOTH, expand=True)
         self.add_btn = ttk.Button(frame4, text='Add Flight', command=self.add_the_flight)
-        self.add_btn.pack(side=tk.LEFT, fill=BOTH, expand=True)
+        self.add_btn.pack(side=LEFT, fill=BOTH, expand=True)
         self.add_btn.config(state=DISABLED)
-        ttk.Button(frame4, text='Close', command=self.add_flights.destroy).pack(side=tk.RIGHT, fill=BOTH, expand=True)
+        ttk.Button(frame4, text='Close', command=self.add_flights.destroy).pack(side=LEFT, fill=BOTH, expand=True)
+
         self.airline_tf.bind('<KeyRelease>', lambda e: self.set_btn())
+        self.fn_tf.bind('<KeyRelease>', lambda e: self.set_btn())
+        self.takeoff_tf.bind('<KeyRelease>', lambda e: self.set_btn())
+        self.landing_tf.bind('<KeyRelease>', lambda e: self.set_btn())
         self.cost_tf.bind('<KeyRelease>', lambda e: self.set_btn())
 
     def add_the_flight(self):
@@ -585,17 +632,21 @@ class ViewFilteredDestinations:
         separator.pack(fill=X)
 
         frame3 = ttk.Frame(self.view_filtered_d)
-        frame3.pack(side=TOP, fill=BOTH, expand=True)
-        ttk.Label(frame3, text='Country', style='Header.TLabel').pack()
+        frame3.pack(side=TOP, fill=BOTH, expand=True, pady=(20,0))
+        ttk.Label(frame3, text='Country', style='SubHeader.TLabel').pack()
         self.input_entry = ttk.Entry(frame3)
         self.input_entry.pack(side=tk.RIGHT, fill=X, expand=True)
 
         self.frame3 = ttk.Frame(self.view_filtered_d)
-        self.frame3.pack()
+        self.frame3.pack(expand=True, fill=BOTH)
 
+        treev_style = ttk.Style()
+        # treev_style.theme_use('clam')
+        treev_style.configure('Treeview.Heading', foreground="#168FC1", background='lightgrey',
+                              font=('Arial', 16, 'bold'))
         columns = ('Name', 'Country')
         self.treeview = ttk.Treeview(self.frame3, columns=columns, show="headings")
-        self.treeview.pack()
+        self.treeview.pack(expand=True, fill=BOTH)
         self.treeview.heading(column=0, text='Name')
         self.treeview.heading(column=1, text='Country')
 
