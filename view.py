@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
+from PIL import Image, ImageTk
 
 
 class View:
@@ -11,7 +12,7 @@ class View:
         # self.root.geometry("300x200")
         photo = tk.PhotoImage(file="/Users/jc/Desktop/A2.zip/icons/login_icon.png")
         self.root.iconphoto(True, photo)
-        # self.root.iconbitmap(bitmap='/Users/jc/Desktop/A2.zip/icon.icns') not necessary
+        self.root.iconbitmap(bitmap='/Users/jc/Desktop/A2.zip/icon.icns') #not necessary
         frame1 = ttk.Frame(self.root, width=200, height=150)
         frame1.pack(side=TOP, expand=True, fill=BOTH, anchor='n')
         frame1.config(border=True, padding=(20, 30))
@@ -19,18 +20,23 @@ class View:
         header_style.configure('Header.TLabel', foreground="#168FC1", font=('Helvetica', 12, 'bold'))
         ttk.Label(frame1, text='Login', style='Header.TLabel').pack(anchor='center', expand=True, fill=Y)
         button_style = ttk.Style()
-        button_style.configure('B.TButton', font=('Arial Narrow', 11, 'bold'), border=0, borderwidth=0)
+        button_style.configure('B.TButton', font=('Arial Narrow', 11, 'bold'), relief='flat')
         button_style.map('B.TButton',
-                         foreground=[('active', 'white'), ('disabled', 'white')],
+                         # foreground=[('active', 'white'), ('disabled', 'white')],
                          # background=[('active', 'red'), ('disabled', 'blue'), ('pressed', 'green')],
                          bordercolour=[('active', 'red'), ('disabled', 'blue')]
                         )
         # event binding for hover on buttons
+        frame_style = ttk.Style()
+        frame_style.configure("F.TFrame", border=True, borderwidth=10, bordercolour='black', padding=(20, 20))
         label_style = ttk.Style()
         label_style.configure('L.TLabel', foreground='#168FC1', font=('Helvetica', 10, 'bold'))
         entry_style = ttk.Style()
         entry_style.configure('E.TEntry', bordercolour="#E2F3FF", borderwidth=0)
         frame1.config(relief='raised')
+        # btn_style = ttk.Style()
+        # btn_style.theme_use('default')
+        # btn_style.theme_use('clam')
 
         frame2 = ttk.Frame(self.root)
         frame2.pack(side=TOP, expand=True, fill=BOTH)
@@ -43,14 +49,12 @@ class View:
         self.pwd_tf.grid(row=1, column=1)
         frame3 = ttk.Frame(self.root)
         frame3.pack(side=BOTTOM, expand=True, fill=X, anchor='s')
-        frame3.config(border=0)
-
+        frame3.configure(border=0)
         # self.login_btn = ttk.Button(frame3, text='Login', command=self.login_cmd, style='B.TButton')
         self.login_btn = tk.Button(frame3, text='Login', command=self.login_cmd, highlightbackground='#168FC1',
                                    foreground='white')
         self.login_btn.pack(side=tk.LEFT, fill=X, expand=True)
-        # ttk.Button(frame3, text='Exit', style='B.TButton', command=root.destroy).pack(side=tk.RIGHT, fill=X, expand=True)
-        tk.Button(frame3, text='Exit', background='red', command=root.destroy).pack(side=tk.RIGHT, fill=X, expand=True)
+        ttk.Button(frame3, text='Exit', style='B.TButton', command=root.destroy).pack(side=tk.RIGHT, fill=X, expand=True)
         self.controller = None
         self.login_btn.config(state=DISABLED)
         self.pwd_tf.bind('<Return>', lambda e: self.login_cmd())
@@ -82,21 +86,32 @@ class AgencyWindow:
         self.agency_controller = agency_controller
         self.agency_window = Toplevel()
         self.agency_window.title('Agency Window')
-        self.agency_window.geometry("600x600")
+        # self.agency_window.geometry("600x600")
         photo = tk.PhotoImage(file="/Users/jc/Desktop/A2.zip/icons/agency_icon.png")
         self.agency_window.iconphoto(False, photo)
         frame1 = ttk.Frame(self.agency_window)
-        frame1.grid(row=0)
+        frame1.pack(padx=10, pady=(0,15))
+        image_path = "/Users/jc/Desktop/A2.zip/images/agency.png"
+        original_image = Image.open(image_path)
+        tk_image = ImageTk.PhotoImage(original_image)
+        label = tk.Label(frame1, image=tk_image)
+        label.pack()
+        label.image = tk_image
+
+        separator = ttk.Separator(self.agency_window, orient="horizontal")
+        separator.pack(fill=X)
+
         frame2 = ttk.Frame(self.agency_window)
-        frame2.grid(row=1)
+        frame2.pack(side=TOP, expand=1, pady=20)
         ttk.Label(frame2, text='Hi ' + user.get_name() + ', welcome to the Prog2 Travel Agency', style='Header.TLabel').pack()
+        separator = ttk.Separator(self.agency_window, orient="horizontal")
+        separator.pack(fill=X)
         frame3 = ttk.Frame(self.agency_window)
-        frame3.grid(row=2)
-        frame2.config(height=600, width=600)
-        ttk.Button(frame3, text='Explore Flights', command=self.exp_flights).grid(row=0, column=0)
-        ttk.Button(frame3, text='Explore Destinations', command=self.exp_destinations).grid(row=0, column=1)
-        ttk.Button(frame3, text='Book a Trip', command=self.book_trip).grid(row=0, column=2)
-        ttk.Button(frame3, text='Exit', command=exit).grid(row=0, column=3)
+        frame3.pack(side=BOTTOM, expand=True, pady=(15,0), fill=X)
+        ttk.Button(frame3, text='Explore Flights', style='B.TButton', command=self.exp_flights).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Explore Destinations', style='B.TButton', command=self.exp_destinations).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Book a Trip', style='B.TButton', command=self.book_trip).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Exit', style='B.TButton', command=exit).pack(side=tk.LEFT, expand=True, fill=X)
 
     def exp_flights(self):
         FlightsMenu(self.user, self.agency_controller)
@@ -126,26 +141,36 @@ class FlightsMenu:
     def __init__(self, user, controller):
         self.flights_window = Toplevel()
         self.flights_window.title('Flights Menu')
-        self.flights_window.geometry("600x600")
+        # self.flights_window.geometry("600x600")
         photo = tk.PhotoImage(file="/Users/jc/Desktop/A2.zip/icons/flights_icon.png")
         self.flights_window.iconphoto(True, photo)
         self.fm_controller = controller
         self.user = user
         frame1 = ttk.Frame(self.flights_window)
-        frame1.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        frame1.pack(side=TOP, fill=BOTH, expand=True, pady=(0,15))
+        image_path = "/Users/jc/Desktop/A2.zip/images/flight.png"
+        original_image = Image.open(image_path)
+        tk_image = ImageTk.PhotoImage(original_image)
+        label = tk.Label(frame1, image=tk_image)
+        label.pack()
+        label.image = tk_image
 
-        frame2 = ttk.Frame(self.flights_window)
-        frame2.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        ttk.Label(frame2, text='Hi '+user.get_name()+', welcome to the Flights section').pack()
+        separator = ttk.Separator(self.flights_window, orient="horizontal")
+        separator.pack(fill=X)
+        frame2 = ttk.Frame(self.flights_window, style="Custom.TFrame")
+        frame2.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=20)
+        ttk.Label(frame2, text='Hi '+user.get_name()+', welcome to the Flights section', style='Header.TLabel').pack()
+        separator = ttk.Separator(self.flights_window, orient="horizontal")
+        separator.pack(fill=X)
 
         frame3 = ttk.Frame(self.flights_window)
-        frame3.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        frame3.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=(15,0))
         btn_width = 9
-        ttk.Button(frame3, text='View All Flights', command=lambda: self.view_all_flights(), width=btn_width).grid(row=0, column=0)
-        ttk.Button(frame3, text='View Flights by Country', command=lambda: self.view_filtered_flights(), width=btn_width).grid(row=0, column=1)
-        ttk.Button(frame3, text='Add Flight', command=lambda: self.add_flight(), width=btn_width).grid(row=0, column=2)
-        ttk.Button(frame3, text='Remove Flight', command=lambda: self.remove_flight(), width=btn_width).grid(row=0, column=3)
-        ttk.Button(frame3, text='Close', command=self.flights_window.destroy, width=btn_width).grid(row=0, column=4)
+        ttk.Button(frame3, text='View All Flights', command=lambda: self.view_all_flights(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='View Flights by Country', command=lambda: self.view_filtered_flights(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Add Flight', command=lambda: self.add_flight(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Remove Flight', command=lambda: self.remove_flight(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Close', command=self.flights_window.destroy, width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
 
     def view_all_flights(self):
         ViewAllFlights(self.fm_controller)
@@ -229,7 +254,7 @@ class ViewFilteredFlights:
         frame1.pack()
         frame2 = ttk.Frame(self.view_ff)
         frame2.pack(side=TOP, fill=BOTH, expand=True)
-        ttk.Label(frame2, text='Destinations', foreground='blue', width=20, font=('Arial', 16, 'bold')).pack()
+        ttk.Label(frame2, text='Flights', foreground='blue', width=20, font=('Arial', 16, 'bold')).pack()
         self.input_entry = ttk.Entry(frame2)
         self.input_entry.pack(side=tk.RIGHT, fill=X, expand=True)
 
@@ -280,13 +305,16 @@ class ViewFilteredFlights:
     def filtered_table(self):
         self.clear_treeview()
         lst = self.v_ff_controller.view_filtered_flights(self.input_entry.get())
-        data = []
-        for f in lst:
-            flight = (f.airline, f.flight_no, f.takeoff, f.landing, f.cost)
-            data.append(flight)
+        if len(lst) == 0:
+            self.treeview.insert('', 'end', values=('No Flights',))
+        else:
+            data = []
+            for f in lst:
+                flight = (f.airline, f.flight_no, f.takeoff, f.landing, f.cost)
+                data.append(flight)
 
-        for a, fn, t, l, c in data:
-            self.treeview.insert('', 'end', values=(a, fn, t, l, c))
+            for a, fn, t, l, c in data:
+                self.treeview.insert('', 'end', values=(a, fn, t, l, c))
 
 
 class AddFlight:
@@ -402,22 +430,32 @@ class DestinationsMenu:
         self.destinations_menu.iconphoto(True, photo)
         self.user = user
         self.dm_controller = controller
-        self.destinations_menu.geometry("600x600")
+        # self.destinations_menu.geometry("600x600")
         frame1 = ttk.Frame(self.destinations_menu)
-        frame1.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        frame1.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=(0, 15))
+        image_path = "/Users/jc/Desktop/A2.zip/images/destination.png"
+        original_image = Image.open(image_path)
+        tk_image = ImageTk.PhotoImage(original_image)
+        label = tk.Label(frame1, image=tk_image)
+        label.pack()
+        label.image = tk_image
 
+        separator = ttk.Separator(self.destinations_menu, orient="horizontal")
+        separator.pack(fill=X)
         frame2 = ttk.Frame(self.destinations_menu)
-        frame2.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        ttk.Label(frame2, text='Hi ' + user.get_name() + ', welcome to the Destinations section').pack()
+        frame2.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=20)
+        ttk.Label(frame2, text='Hi ' + user.get_name() + ', welcome to the Destinations section', style='Header.TLabel').pack()
+        separator = ttk.Separator(self.destinations_menu, orient="horizontal")
+        separator.pack(fill=X)
 
         frame3 = ttk.Frame(self.destinations_menu)
-        frame3.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        frame3.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=(15,0))
         btn_width = 9
-        ttk.Button(frame3, text='View All Destinations', command=lambda: self.view_destinations(), width=btn_width).grid(row=0, column=0)
-        ttk.Button(frame3, text='View Destinations by Country', command=lambda: self.view_filtered_destinations(), width=btn_width).grid(row=0, column=1)
-        ttk.Button(frame3, text='Add Destinations', command=lambda: self.add_destinations(), width=btn_width).grid(row=0, column=2)
-        ttk.Button(frame3, text='Remove Destinations', command=lambda: self.remove_destinations(), width=btn_width).grid(row=0, column=3)
-        ttk.Button(frame3, text='Close', command=self.destinations_menu.destroy, width=btn_width).grid(row=0, column=4)
+        ttk.Button(frame3, text='View All Destinations', command=lambda: self.view_destinations(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='View Destinations by Country', command=lambda: self.view_filtered_destinations(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Add Destinations', command=lambda: self.add_destinations(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Remove Destinations', command=lambda: self.remove_destinations(), width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Close', command=self.destinations_menu.destroy, width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
 
     def view_destinations(self):
         ViewAllDestinations(self.dm_controller)
@@ -436,24 +474,39 @@ class ViewAllDestinations:   #it doesn't auto update, need to fix that
     def __init__(self, controller):
         self.view_all_destinations = Toplevel()
         self.vad_controller = controller
-        self.view_all_destinations.geometry("600x600")
+        # self.view_all_destinations.geometry("600x600")
         self.view_all_destinations.title('View All Destinations')
-        frame1 = ttk.Frame(self.view_all_destinations)
-        frame1.pack()
+        frame1 = tk.Frame(self.view_all_destinations)
+        frame1.pack(pady=(0,15))
+        image_path = "/Users/jc/Desktop/A2.zip/images/destination.png"
+        original_image = Image.open(image_path)
+        tk_image = ImageTk.PhotoImage(original_image)
+        label = tk.Label(frame1, image=tk_image, width=1000, height=300)
+        label.pack()
+        label.image = tk_image
+
+        separator = ttk.Separator(self.view_all_destinations, orient="horizontal")
+        separator.pack(fill=X)
         frame2 = ttk.Frame(self.view_all_destinations)
-        frame2.pack(side=TOP, fill=BOTH, expand=True)
-        ttk.Label(frame2, text='Destinations', foreground='blue', width=20, font=('Arial', 16, 'bold')).pack()
+        frame2.pack(side=TOP, fill=BOTH, expand=True, pady=25)
+        ttk.Label(frame2, text='Destinations', style='Header.TLabel').pack()
+        separator = ttk.Separator(self.view_all_destinations, orient="horizontal")
+        separator.pack(fill=X)
+
         self.frame3 = ttk.Frame(self.view_all_destinations)
-        self.frame3.pack()
+        self.frame3.pack(pady=(15,0), fill=BOTH, expand=True)
         columns = ('Name', 'Country')
-        self.t = ttk.Treeview(self.frame3, columns=columns, show="headings")
+        treev_style = ttk.Style()
+        # treev_style.theme_use('clam')
+        treev_style.configure('Treeview.Heading', foreground="#168FC1", background='lightgrey', font=('Arial', 16, 'bold'))
+        self.t = ttk.Treeview(self.frame3, columns=columns, show="headings", )
         self.t.pack(fill=BOTH, expand=True)
+        # self.t.place(width=1000, height=300)
         self.t.heading(column=0, text='Name')
         self.t.heading(column=1, text='Country')
         frame4 = ttk.Frame(self.view_all_destinations)
-        frame4.pack(fill=X, expand=True)
+        frame4.pack(side=BOTTOM, fill=X, expand=True)
         ttk.Button(frame4, text='Close', command=self.view_all_destinations.destroy).pack(side=tk.RIGHT, fill=BOTH, expand=True)
-
         self.lst = self.vad_controller.model.agency.destinations.destinations
         # self.lst_var = tk.IntVar()
         # self.lst_var.set(len(self.lst))
@@ -473,8 +526,17 @@ class ViewAllDestinations:   #it doesn't auto update, need to fix that
             desti = (d.name, d.country)
             data.append(desti)
 
-        for n,c in data:
-            self.t.insert('', 'end', values=(n, c))
+        for index, (n,c) in enumerate(data):
+            num = index+1
+            if num % 2 != 0:
+                self.t.insert('', 'end', values=(n, c), tags=('oddrow',))
+            else:
+                self.t.insert('', 'end', values=(n, c), tags=('evenrow',))
+
+            self.t.tag_configure('evenrow', background='lightgrey', font=("Arial", 11))
+            self.t.tag_configure('oddrow', font=("Arial", 11))
+            # self.t.tag_configure('heading', font=("Arial", 14, "bold"), foreground="green")
+#           if n index is odd: do one with tag oddrow
 
 
 class ViewFilteredDestinations:
@@ -525,13 +587,16 @@ class ViewFilteredDestinations:
     def filtered_table(self):
         self.clear_treeview()
         lst = self.vf_controller.view_filtered_destinations(self.input_entry.get())
-        data = []
-        for d in lst:
-            desti = (d.name, d.country)
-            data.append(desti)
+        if len(lst) == 0:
+            self.treeview.insert('', 'end', values=('No Destinations',))
+        else:
+            data = []
+            for d in lst:
+                desti = (d.name, d.country)
+                data.append(desti)
 
-        for n, c in data:
-            self.treeview.insert('', 'end', values=(n, c))
+            for n, c in data:
+                self.treeview.insert('', 'end', values=(n, c))
 
 
 class AddDestination:
@@ -636,23 +701,64 @@ class TripsMenu:
         self.trips_menu.title('Trips Menu')
         photo = tk.PhotoImage(file="/Users/jc/Desktop/A2.zip/icons/trip_icon.png")
         self.trips_menu.iconphoto(True, photo)
-        self.trips_menu.geometry("600x600")
+        # self.trips_menu.geometry("600x600")
         self.tm_controller = controller
         frame1 = ttk.Frame(self.trips_menu)
-        frame1.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-
+        frame1.pack(side=TOP, fill=tk.BOTH, expand=True, pady=(0,15))
+        image_path = "/Users/jc/Desktop/A2.zip/images/trip.png"
+        original_image = Image.open(image_path)
+        tk_image = ImageTk.PhotoImage(original_image)
+        label = tk.Label(frame1, image=tk_image)
+        label.pack()
+        label.image = tk_image
+        separator = ttk.Separator(self.trips_menu, orient="horizontal")
+        separator.pack(fill=X)
         frame2 = ttk.Frame(self.trips_menu)
-        frame2.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-        ttk.Label(frame2, text='Hi ' + user.get_name() + ', welcome to the Trips section').pack()
+        frame2.pack(side=TOP, fill=tk.BOTH, expand=True, pady=20)
+        ttk.Label(frame2, text='Hi ' + user.get_name() + ', welcome to the Trips section', style='Header.TLabel').pack()
+        separator = ttk.Separator(self.trips_menu, orient="horizontal")
+        separator.pack(fill=X)
+
 
         frame3 = ttk.Frame(self.trips_menu)
-        frame3.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        frame3.pack(side=BOTTOM, fill=X, expand=True, pady=(15,0))
         btn_width = 9
-        ttk.Button(frame3, text='Add Destination', command=self.add_destination, width=btn_width).grid(row=0, column=0)
-        ttk.Button(frame3, text='Remove Destination', command=self.remove_destination, width=btn_width).grid(row=0, column=1)
-        ttk.Button(frame3, text='Add Connecting Flights', command=self.add_connecting_flights, width=btn_width).grid(row=0, column=2)
-        ttk.Button(frame3, text='View Trip', command=self.view_trip, width=btn_width).grid(row=0, column=3)
-        ttk.Button(frame3, text='Close', command=self.trips_menu.destroy, width=btn_width).grid(row=0, column=4)
+        ttk.Button(frame3, text='Add Destination', command=self.add_destination, width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Remove Destination', command=self.remove_destination, width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Add Connecting Flights', command=self.add_connecting_flights, width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='View Trip', command=self.view_trip, width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+        ttk.Button(frame3, text='Close', command=self.trips_menu.destroy, width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
+
+        # self.destinations_menu.title('Destinations Menu')
+        # photo = tk.PhotoImage(file="/Users/jc/Desktop/A2.zip/icons/destinations_icon.png")
+        # self.destinations_menu.iconphoto(True, photo)
+        # self.user = user
+        # self.dm_controller = controller
+        # # self.destinations_menu.geometry("600x600")
+        # frame1 = ttk.Frame(self.destinations_menu)
+        # frame1.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=(0, 15))
+
+        # image_path = "/Users/jc/Desktop/A2.zip/images/destination.png"
+        # original_image = Image.open(image_path)
+        # tk_image = ImageTk.PhotoImage(original_image)
+        # label = tk.Label(frame1, image=tk_image)
+        # label.pack()
+        # label.image = tk_image
+        #
+        # separator = ttk.Separator(self.destinations_menu, orient="horizontal")
+        # separator.pack(fill=X)
+        # frame2 = ttk.Frame(self.destinations_menu)
+        # frame2.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=20)
+        # ttk.Label(frame2, text='Hi ' + user.get_name() + ', welcome to the Destinations section',
+        #           style='Header.TLabel').pack()
+        # separator = ttk.Separator(self.destinations_menu, orient="horizontal")
+        # separator.pack(fill=X)
+        #
+        # frame3 = ttk.Frame(self.destinations_menu)
+        # frame3.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=(15, 0))
+        # btn_width = 9
+        # ttk.Button(frame3, text='View All Destinations', command=lambda: self.view_destinations(),
+        #            width=btn_width).pack(side=tk.LEFT, expand=True, fill=X)
 
     def set_tm_controller(self, ctrl):
         self.tm_controller = ctrl
