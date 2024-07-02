@@ -19,8 +19,16 @@ class Administrators:
         #throw error
 
     def insert_dummy_data(self):
-        self.administrators.append(Administrator("Davey", "david46", "123"))
-        self.administrators.append(Administrator("Angela", "angela123", "mypw"))
-        self.administrators.append(Administrator("Rafiqul", "boss", "secure"))
-        self.administrators.append(Administrator("Vishesh", "legend", "notsecure"))
-        self.administrators.append(Administrator("Greatest Ever", " ", " "))
+        self.administrators.append(Administrator("The Best", " ", " "))
+        self.administrators.append(Administrator("Legend", "L", "notsecure"))
+        self.administrators.append(Administrator("Boss", "Recruiter", "hirejosh"))
+        self.administrators.append(Administrator("Random Person", "rp", "01"))
+        self.administrators.append(Administrator("Captain Obvious", "cap", "1234"))
+        self.administrators.append(Administrator("Baron von Banter", "bvb", "hirejosh"))
+        self.administrators.append(Administrator("HR Hero", "hrh", "hirejosh"))
+        self.administrators.append(Administrator("Recruiting Rockstar", "rr", "hirejosh"))
+        self.administrators.append(Administrator("People Person", "pp", "hirejoshuachelashaw"))
+        self.administrators.append(Administrator("Talent Whisperer", "youshould", "hireme"))
+        self.administrators.append(Administrator("Hiring Guru", "hg", "hirejosh"))
+
+

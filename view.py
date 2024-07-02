@@ -61,7 +61,7 @@ class View:
         Button(frame3, text='Exit', bg='#168FC1',fg='white', borderless=0, borderwidth=2, bordercolor='#168FC1',padx=0, pady=0, relief='flat', command=root.destroy).pack(side=tk.RIGHT, fill=X, expand=True)
         self.controller = None
         self.login_btn.config(state=DISABLED)
-        self.pwd_tf.bind('<Return>', lambda e: self.login_cmd())
+        # self.pwd_tf.bind('<Return>', lambda e: self.login_cmd())
         self.login_tf.bind('<KeyRelease>', lambda e: self.set_button())
         self.pwd_tf.bind('<KeyRelease>', lambda e: self.set_button())
 
@@ -107,7 +107,8 @@ class AgencyWindow:
 
         frame2 = ttk.Frame(self.agency_window)
         frame2.pack(side=TOP, expand=1, pady=20)
-        ttk.Label(frame2, text='Hi ' + user.get_name() + ', welcome to the Prog2 Travel Agency', style='Header.TLabel').pack()
+        ttk.Label(frame2, text='Hello ' + user.get_name() + ', welcome to the Travel Agency!'
+                                                            '', style='Header.TLabel').pack()
         separator = ttk.Separator(self.agency_window, orient="horizontal")
         separator.pack(fill=X)
         frame3 = ttk.Frame(self.agency_window)
@@ -182,7 +183,7 @@ class FlightsMenu:
         separator.pack(fill=X)
         frame2 = ttk.Frame(self.flights_window, style="Custom.TFrame")
         frame2.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=20)
-        ttk.Label(frame2, text='Hi '+user.get_name()+', welcome to the Flights section', style='Header.TLabel').pack()
+        ttk.Label(frame2, text='Hello there, '+user.get_name()+', welcome to the Flights section!', style='Header.TLabel').pack()
         separator = ttk.Separator(self.flights_window, orient="horizontal")
         separator.pack(fill=X)
 
@@ -580,7 +581,7 @@ class DestinationsMenu:
         separator.pack(fill=X)
         frame2 = ttk.Frame(self.destinations_menu)
         frame2.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=20)
-        ttk.Label(frame2, text='Hi ' + user.get_name() + ', welcome to the Destinations section', style='Header.TLabel').pack()
+        ttk.Label(frame2, text='Hello there, ' + user.get_name() + ', welcome to the Destinations section!', style='Header.TLabel').pack()
         separator = ttk.Separator(self.destinations_menu, orient="horizontal")
         separator.pack(fill=X)
 
@@ -904,7 +905,7 @@ class RemoveDestination:
 class TripsMenu:
     def __init__(self, user, controller):
         self.trips_menu = Toplevel()
-        self.trips_menu.title('Trips Menu')
+        self.trips_menu.title('Trip Booking Menu')
         photo = tk.PhotoImage(file="/Users/jc/Desktop/A2.zip/icons/trip_icon.png")
         self.trips_menu.iconphoto(True, photo)
         # self.trips_menu.geometry("600x600")
@@ -921,7 +922,7 @@ class TripsMenu:
         separator.pack(fill=X)
         frame2 = ttk.Frame(self.trips_menu)
         frame2.pack(side=TOP, fill=tk.BOTH, expand=True, pady=20)
-        ttk.Label(frame2, text='Hi ' + user.get_name() + ', welcome to the Trips section', style='Header.TLabel').pack()
+        ttk.Label(frame2, text='Hello there, ' + user.get_name() + ', welcome to the Trip Booking section!', style='Header.TLabel').pack()
         separator = ttk.Separator(self.trips_menu, orient="horizontal")
         separator.pack(fill=X)
 
